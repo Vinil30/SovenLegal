@@ -15,13 +15,12 @@ import glob
 from dotenv import load_dotenv
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain.schema import Document
-from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_core.documents import Document
+from openai import OpenAI
 from utils.doc_reference_generator import handle_document_reference_request
 from utils.lawyer_deadlines import GenerateMilestones
-from utils.verify_strategy import run_gemini_verification
+from utils.verify_strategy import run_ai_verification
 import ssl
-from google import genai
 import re
 FAISS_INDEX_PATH = os.getenv("FAISS_INDEX_PATH", "faiss_index")
 # Load environment variables
@@ -46,8 +45,9 @@ answers_col = db["find_users"]
 lawyers = db["lawyers"]
 bcrypt = Bcrypt(app)
 
-# Google API key
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL")
 
 
 #ROUTES
@@ -1128,14 +1128,6 @@ def answer_query(query_id):
             print(f"FAISS retrieval error: {str(e)}")
             return jsonify({"error": "Failed to retrieve similar documents"}), 500
 
-        # Generate response
-        # llm = ChatGoogleGenerativeAI(
-        #     model="gemini-1.5-pro",
-        #     google_api_key=GEMINI_API_KEY,
-        #     temperature=0.2,
-        #     max_output_tokens=512
-        # )
-
         prompt = f"""
 You are a legal AI assistant that finds similar legal queries. 
 Based on the context provided, return the 6 most similar queries to the user's query.
@@ -1171,14 +1163,23 @@ User query: {query_text}
 """
 
         try:
-            api_key = os.environ.get("GEMINI_API_KEY")
-            client = genai.Client(api_key=api_key)
-            resp = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=[prompt]
+            client = OpenAI(
+                api_key=OPENAI_API_KEY,
+                base_url=OPENAI_BASE_URL
+            )
+            resp = client.chat.completions.create(
+                model=OPENAI_MODEL,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=0.2,
+                max_tokens=512
             )
             
-            response = resp.text.strip()
+            response = resp.choices[0].message.content.strip()
 
             start = response.find("{")
             end = response.rfind("}") + 1
@@ -2310,7 +2311,7 @@ def verify_strategy(case_id):
                 except:
                     m["due_date"] = None
 
-        ai_feedback = run_gemini_verification(case_title, strategy, milestones)
+        ai_feedback = run_ai_verification(case_title, strategy, milestones)
         print("AI Feedback:", ai_feedback)
 
         verification_record = {

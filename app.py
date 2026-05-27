@@ -12,7 +12,6 @@ from utils.query_analysis import Query_Analysis
 from utils.generate_deadlines import GenerateDeadlines
 from utils.generate_req_docs import Generate_Documents
 import glob
-from dotenv import load_dotenv
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
@@ -22,12 +21,13 @@ from utils.lawyer_deadlines import GenerateMilestones
 from utils.verify_strategy import run_ai_verification
 import ssl
 import re
-FAISS_INDEX_PATH = os.getenv("FAISS_INDEX_PATH", "faiss_index")
-# Load environment variables
+
 load_dotenv()
 
+FAISS_INDEX_PATH = os.getenv("FAISS_INDEX_PATH", "faiss_index")
+
 app = Flask(__name__)
-app.secret_key = "supersecretkey123"
+app.secret_key = os.getenv("SECRET_KEY", "supersecretkey123")
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 client = MongoClient(
@@ -1085,8 +1085,8 @@ def chat_interface():
 
 
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-vectorstore = FAISS.load_local("faiss_index", embedding_model, allow_dangerous_deserialization=True)
-retriever = FAISS.load_local("faiss_index", embedding_model, allow_dangerous_deserialization=True).as_retriever(search_kwargs={"k": 6})
+vectorstore = FAISS.load_local(FAISS_INDEX_PATH, embedding_model, allow_dangerous_deserialization=True)
+retriever = FAISS.load_local(FAISS_INDEX_PATH, embedding_model, allow_dangerous_deserialization=True).as_retriever(search_kwargs={"k": 6})
 
 
 @app.route("/find_users/<query_id>", methods=["GET"])
@@ -2404,4 +2404,7 @@ def get_latest_verification(case_id):
         return jsonify({"success": False, "message": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host="localhost", port=5000)
+    debug = os.getenv("FLASK_DEBUG", "false").lower() in {"1", "true", "yes"}
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "5000"))
+    app.run(debug=debug, host=host, port=port)

@@ -1,5 +1,7 @@
 .env
 Environment
+__pycache__/
+*.py[cod]
 demo.html
 demo.ipynb
 main.py

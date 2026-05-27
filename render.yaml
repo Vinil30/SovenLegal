@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: soven-legal-tech
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_DEBUG
+        value: false
+      - key: FAISS_INDEX_PATH
+        value: faiss_index

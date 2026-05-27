@@ -7,69 +7,258 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .error-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-            text-align: center;
-            padding: 2rem;
-        }
-        .error-icon {
-            font-size: 4rem;
-            color: #dc3545;
-            margin-bottom: 1rem;
-        }
-        .error-title {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-        .error-message {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 2rem;
-            max-width: 600px;
-        }
-        .error-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            transform: translateY(-1px);
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #545b62;
-            transform: translateY(-1px);
-        }
-    </style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root{
+  --cream:#F8F5F0;
+  --warm-white:#FDFCFA;
+  --ink:#1A1814;
+  --ink-muted:#4A4640;
+  --ink-light:#8A8480;
+  --gold:#B8922A;
+  --gold-light:#D4A843;
+  --gold-pale:#F5EDD8;
+  --sage:#4A5E52;
+  --sage-light:#EEF2EF;
+  --border:#E4DDD4;
+  --border-dark:#C8BFB4;
+  --danger:#C0392B;
+  --sidebar-w:260px;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  line-height:1.7;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:var(--sidebar-w);
+  height:100vh;
+  background:var(--ink);
+  display:flex;
+  flex-direction:column;
+  z-index:200;
+}
+
+.logo-container{
+  padding:28px 24px 22px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;
+  font-weight:500;
+  color:white;
+}
+
+.logo span{
+  color:var(--gold-light);
+}
+
+.sidebar ul{
+  list-style:none;
+  padding:14px 0;
+  flex:1;
+}
+
+.sidebar ul li{
+  margin:2px 12px;
+}
+
+.sidebar ul li a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:11px 14px;
+  border-radius:6px;
+  text-decoration:none;
+  color:rgba(255,255,255,0.55);
+  font-size:0.82rem;
+  transition:0.2s;
+}
+
+.sidebar ul li a:hover{
+  background:rgba(255,255,255,0.05);
+  color:white;
+}
+
+.sidebar-footer{
+  padding:16px 20px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-footer p{
+  font-size:0.7rem;
+  color:rgba(255,255,255,0.25);
+}
+
+/* MAIN */
+
+.main-content{
+  margin-left:var(--sidebar-w);
+  min-height:100vh;
+  padding:36px 40px;
+}
+
+/* HEADER */
+
+header{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:20px 28px;
+  margin-bottom:30px;
+}
+
+header h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.2rem;
+  font-weight:500;
+  color:var(--ink);
+}
+
+/* ERROR CARD */
+
+.error-container{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:60px 40px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:60vh;
+}
+
+.error-icon{
+  font-size:4rem;
+  color:var(--danger);
+  margin-bottom:24px;
+}
+
+.error-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.4rem;
+  font-weight:500;
+  color:var(--ink);
+  margin-bottom:14px;
+}
+
+.error-message{
+  font-size:0.95rem;
+  color:var(--ink-muted);
+  max-width:650px;
+  margin-bottom:34px;
+  line-height:1.9;
+}
+
+/* BUTTONS */
+
+.error-actions{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.btn{
+  height:42px;
+  padding:0 20px;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-size:0.72rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  transition:0.2s;
+}
+
+.btn-primary{
+  background:var(--gold);
+  color:white;
+}
+
+.btn-primary:hover{
+  background:#9A7A22;
+  color:white;
+}
+
+.btn-secondary{
+  background:transparent;
+  border:1px solid var(--border-dark);
+  color:var(--ink-muted);
+}
+
+.btn-secondary:hover{
+  border-color:var(--ink);
+  color:var(--ink);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+  :root{
+    --sidebar-w:0px;
+  }
+
+  .sidebar{
+    transform:translateX(-260px);
+  }
+
+  .main-content{
+    margin-left:0;
+    padding:24px 20px;
+  }
+}
+
+@media(max-width:768px){
+
+  .error-container{
+    padding:40px 24px;
+  }
+
+  .error-title{
+    font-size:2rem;
+  }
+
+  .error-actions{
+    flex-direction:column;
+    width:100%;
+  }
+
+  .btn{
+    width:100%;
+  }
+}
+</style>
 </head>
 <body>
     
     <div class="sidebar">
         <div class="logo-container">
-            <h2 class="logo">Akaash Pandya</h2>
+            <h2 class="logo">Soven <span>Legal</span></h2>
         </div>
         <ul>
             <li><a href="/dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>

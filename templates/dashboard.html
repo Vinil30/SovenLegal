@@ -1,289 +1,741 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soven Legal - Dashboard</title>
-    <link rel="stylesheet" href="static/css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo-container">
-            <h2 class="logo">Akaash Pandya</h2>
-        </div>
-        <ul>
-            <li><a href="/dashboard" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-            <li><a href="/documents"><i class="fas fa-file-alt"></i> <span>Documents</span></a></li>
-            <li><a href="/hired-lawyers"><i class="fas fa-user-tie"></i> <span>My Lawyers</span></a></li>
-            <li><a href="/lawyers"><i class="fas fa-user-tie"></i> <span>Find Lawyers</span></a></li>
-            <li><a href="/chat-interface"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
-            <li><a href="/legal-aid"><i class="fas fa-hands-helping"></i> <span>Legal Help</span></a></li>
-            <li><a href="/upload-case-file" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Case File</a></li>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soven Legal - Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="static/css/dashboard.css">
+<style>
+:root {
+  --cream: #F8F5F0;
+  --warm-white: #FDFCFA;
+  --ink: #1A1814;
+  --ink-muted: #4A4640;
+  --ink-light: #8A8480;
+  --gold: #B8922A;
+  --gold-light: #D4A843;
+  --gold-pale: #F5EDD8;
+  --sage: #4A5E52;
+  --sage-light: #EEF2EF;
+  --border: #E4DDD4;
+  --border-dark: #C8BFB4;
+  --sidebar-w: 260px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { min-height: 100%; font-family: 'DM Sans', sans-serif; font-weight: 300; background: var(--cream); color: var(--ink); }
 
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2025 Soven Legal</p>
-        </div>
-    </div>
+/* ── NOTIFICATIONS ── */
+#notification-container {
+  position: fixed; top: 24px; right: 24px;
+  z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+  pointer-events: none;
+}
+.notif {
+  pointer-events: all;
+  display: flex; align-items: flex-start; gap: 12px;
+  min-width: 320px; max-width: 400px;
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 6px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 32px rgba(26,24,20,0.12);
+  animation: notifIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+  position: relative; overflow: hidden;
+}
+.notif.success { border-left-color: var(--sage); }
+.notif.warning { border-left-color: var(--gold); }
+.notif.error   { border-left-color: #C0392B; }
+.notif.info    { border-left-color: #2980b9; }
+.notif-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 0.76rem;
+}
+.notif.success .notif-icon { background: var(--sage-light); color: var(--sage); }
+.notif.warning .notif-icon { background: var(--gold-pale);  color: var(--gold); }
+.notif.error   .notif-icon { background: #fdf0ee;           color: #C0392B; }
+.notif.info    .notif-icon { background: #eaf3fb;           color: #2980b9; }
+.notif-body { flex: 1; min-width: 0; }
+.notif-title { font-size: 0.8rem; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+.notif-msg   { font-size: 0.78rem; color: var(--ink-muted); font-weight: 300; line-height: 1.5; }
+.notif-close {
+  background: none; border: none; cursor: pointer;
+  color: var(--ink-light); font-size: 0.7rem; padding: 2px;
+  transition: color 0.2s; flex-shrink: 0;
+}
+.notif-close:hover { color: var(--ink); }
+.notif-progress {
+  position: absolute; bottom: 0; left: 0; height: 2px;
+  background: currentColor; opacity: 0.22;
+  animation: notifBar 4s linear forwards;
+}
+.notif.success .notif-progress { color: var(--sage); }
+.notif.warning .notif-progress { color: var(--gold); }
+.notif.error   .notif-progress { color: #C0392B; }
+.notif.info    .notif-progress { color: #2980b9; }
+@keyframes notifIn  { from { opacity:0; transform: translateX(20px) scale(0.97); } to { opacity:1; transform: translateX(0) scale(1); } }
+@keyframes notifOut { to   { opacity:0; transform: translateX(20px); max-height:0; padding:0; margin:0; } }
+@keyframes notifBar { from { width:100%; } to { width:0; } }
 
-    <!-- Main Dashboard -->
-    <div class="main-content">
-        <header>
-            <div class="header-left">
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1>Dashboard</h1>
-            </div>
-            <div class="user-info">
-                <span>{{ user.name }}</span>
-                <div class="avatar">{{ user.initials }}</div>
-            </div>
-        </header>
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-w); height: 100vh;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  z-index: 200;
+  transition: transform 0.3s ease;
+}
+#generateDeadlinesBtn{
+  margin: 2vw;
+}
+.sidebar-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=60&auto=format&fit=crop');
+  background-size: cover; background-position: center;
+  opacity: 0.06; pointer-events: none;
+}
+.logo-container {
+  padding: 28px 24px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: relative; flex-shrink: 0;
+}
+.logo-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 500; color: white; line-height: 1; }
+.logo-name span { color: var(--gold-light); }
+.logo-sub { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 6px; }
+.sidebar nav { flex: 1; padding: 14px 0; overflow-y: auto; position: relative; }
+.sidebar ul { list-style: none; }
+.sidebar ul li { margin: 2px 12px; }
+.sidebar ul li a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 6px;
+  text-decoration: none; font-size: 0.82rem; font-weight: 300;
+  color: rgba(255,255,255,0.48); transition: all 0.2s;
+}
+.sidebar ul li a:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+.sidebar ul li a.active { color: white; background: rgba(184,146,42,0.16); border: 1px solid rgba(184,146,42,0.22); }
+.sidebar ul li a.active i { color: var(--gold-light); }
+.sidebar ul li a i { font-size: 0.82rem; width: 16px; text-align: center; color: rgba(255,255,255,0.28); transition: color 0.2s; }
+.sidebar ul li a:hover i { color: rgba(255,255,255,0.55); }
+.nav-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 20px; }
+.upload-wrap { padding: 14px 16px; }
+.btn-upload {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px;
+  background: var(--gold); color: white; border: none; border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.74rem; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-upload:hover { background: #9A7A22; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; position: relative; }
+.sidebar-footer p { font-size: 0.7rem; color: rgba(255,255,255,0.2); }
 
-        <!-- Progress -->
-        <section class="case-progress">
-            <div class="section-header">
-                <h3>Your Case Progress</h3>
-                <div class="progress-indicator">
-                    <span>Updated just now</span>
-                </div>
-            </div>
-            <div class="progress-box">
-                <div class="circle-progress-container">
-                    <div class="circle-progress" data-progress="{{ progress }}">
-                        <span id="progress-percent">{{ progress }}%</span>
-                    </div>
-                </div>
-                <div class="stats">
-                    <div class="stat-item">
-                        <strong>{{ completed_tasks }}</strong>
-                        <span>Completed Tasks</span>
-                    </div>
-                    <div class="stat-item">
-                        <strong>{{ pending_tasks }}</strong>
-                        <span>Pending Tasks</span>
-                    </div>
-                    
-                </div>
-                <button class="refresh-btn" onclick="refreshProgress()">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
-        </section>
+/* ── MAIN ── */
+.main-content { margin-left: var(--sidebar-w); min-height: 100vh; }
 
-    
-        <!-- Deadlines (per selected query) + Manual deadlines -->
-        <section class="deadlines">
-            <div class="section-header">
-                <h3>Upcoming Deadlines</h3>
-                <div class="section-actions" style="display:flex;gap:.5rem;align-items:center;">
-                    <select id="deadlineQuerySelect">
-                        {% if saved_queries %}
-                            {% for q in saved_queries %}
-                                <option value="{{ q.id }}">{{ q.text }}</option>
-                            {% endfor %}
-                        {% else %}
-                            <option value="" disabled selected>No queries yet</option>
-                        {% endif %}
-                    </select>
-                    <button class="generate_deadlines" id="generateDeadlinesBtn" onclick="handleGenerateDeadlines()"
-                        {% if not saved_queries %}disabled{% endif %}>
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Deadlines
-                    </button>
-                    <button class="add-btn" onclick="addDeadline()">
-                        <i class="fas fa-plus"></i> Add Deadline
-                    </button>
-                </div>
-            </div>
-
-<!-- AI-generated deadlines for the selected query -->
-<div class="generated-deadlines">
-    <h4>AI-Generated Deadlines (for selected query)</h4>
-    <ul id="query-deadlines-list">
-        {% if saved_queries and saved_queries[0].deadlines %}
-            {% for dl in saved_queries[0].deadlines %}
-                {% if dl.task and dl.due_date %}
-                    <li>
-                        <div class="deadline-content">
-                            <label class="checkbox-container">
-                                <input type="checkbox"
-                                       {% if dl.completed %}checked{% endif %}
-                                       onchange="toggleAiDeadline('{{ saved_queries[0].id }}', '{{ dl.id }}', this.checked)">
-                                <span class="checkmark"></span>
-                            </label>
-                            <div class="deadline-info">
-                                <span class="deadline-title">{{ dl.task }}</span>
-                                <span class="deadline-date">Due: {{ dl.due_date }}</span>
-                            </div>
-                        </div>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <li>No AI-generated deadlines yet. Click "Generate Deadlines".</li>
-        {% endif %}
-    </ul>
-</div>
-
-            <!--  manual deadlines  -->
-            <div class="manual-deadlines" style="margin-top:1rem;">
-                <h4>Your Manual Deadlines</h4>
-                <ul id="deadline-list">
-                    {% for deadline in deadlines %}
-                    <li data-id="{{ deadline.id }}">
-                        <div class="deadline-content">
-                            <label class="checkbox-container">
-                                <input type="checkbox" {% if deadline.completed %}checked{% endif %}
-                                    onchange="toggleDeadline('{{ deadline.id }}', this.checked)">
-                                <span class="checkmark"></span>
-                            </label>
-                            <div class="deadline-info">
-                                <span class="deadline-title">{{ deadline.title }}</span>
-                                <span class="deadline-date">{{ deadline.date }}</span>
-                            </div>
-                        </div>
-                        <div class="actions">
-                            <button class="icon-btn edit-btn" onclick="editDeadline('{{ deadline.id }}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="icon-btn delete-btn" onclick="deleteDeadline('{{ deadline.id }}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </li>
-                    {% else %}
-                    <li>No manual deadlines yet. Add one using the “Add Deadline” button.</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </section>
-
-        <!-- Query Section -->
-        <section class="query-section">
-            <div class="section-header">
-                <h3>Case Query Management</h3>
-                <button class="add-btn" id="newQueryBtn">
-                    <i class="fas fa-plus"></i> New Query
-                </button>
-            </div>
-            
-            <!-- Query Input Form -->
-            <div class="query-input-container" id="queryInputContainer">
-                <div class="query-header">
-                    <h4>Create New Query</h4>
-                    <button class="icon-btn close-btn" id="closeQueryBtn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <textarea id="userQuery" placeholder="Enter your legal query here..."></textarea>
-                <div class="query-actions">
-                    <button class="query-btn save-btn" onclick="saveQuery()">
-                        <i class="fas fa-save"></i> Save Query
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Saved Queries -->
-            <div class="saved-queries">
-                <h4>Saved Queries</h4>
-                <div class="queries-list" id="queriesList">
-                    {% for q in saved_queries %}
-                    <div class="query-card">
-                        <p><strong>{{ q.text }}</strong> ({{ q.date }})</p>
-                        {% if q.scan_status %}
-                        <div class="analysis">
-                            <p><strong>Status:</strong> {{ q.scan_status }}</p>
-                            <p><strong>Message:</strong> {{ q.scan_result }}</p>
-                            <button class="find_users" onclick="find_users('{{ q.id }}')">Find Users</button>
-                        </div>
-                        {% else %}
-                        <button onclick="scan_query('{{ q.text }}')">Analyze</button>
-                        {% endif %}
-                    </div>
-                    {% else %}
-                    <p>No queries yet. Create your first one with “New Query”.</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Analysis Results -->
-            <div class="analysis-results" id="analysisResults">
-                <div class="analysis-header">
-                    <h4>Analysis Results</h4>
-                    <button class="icon-btn close-btn" onclick="closeAnalysis()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="analysis-content" id="analysisContent">
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Pass saved_queries to JS safely -->
-    <script id="saved-queries-data" type="application/json">
-        {{ saved_queries | tojson }}
-    </script>
-
-    <!-- Helpers to switch selected query content in the two cards -->
-    <script>
-        const savedQueries = (() => {
-            try {
-                const el = document.getElementById('saved-queries-data');
-                return el ? JSON.parse(el.textContent || '[]') : [];
-            } catch (e) {
-                return [];
-            }
-        })();
-
-        
-
-        function renderGeneratedDeadlines(queryId) {
-    const ul = document.getElementById('query-deadlines-list');
-    if (!ul) return;
-    ul.innerHTML = '';
-    
-    const q = savedQueries.find(x => x.id === queryId);
-    if (!q) {
-        ul.innerHTML = '<li>No query selected.</li>';
-        return;
-    }
-    
-    const dls = Array.isArray(q.deadlines) ? q.deadlines : [];
-    if (!dls.length) {
-        ul.innerHTML = '<li>No AI-generated deadlines yet. Click “Generate Deadlines”.</li>';
-        return;
-    }
-    
-    dls.forEach(d => {
-        if (d.task && d.due_date) {
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${d.task}</strong><br>Due: ${d.due_date}`;
-            ul.appendChild(li);
-        }
-    });
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(253,252,250,0.93); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 16px; }
+.menu-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--ink-muted); font-size: 0.85rem; transition: all 0.2s;
+}
+.menu-toggle:hover { border-color: var(--ink); color: var(--ink); }
+.header-title { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 400; color: var(--ink); }
+.user-info { display: flex; align-items: center; gap: 12px; }
+.user-name { font-size: 0.84rem; color: var(--ink-muted); font-weight: 300; }
+.avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--ink); color: var(--gold-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500;
+  border: 2px solid var(--gold); cursor: pointer;
 }
 
+/* ── CONTENT ── */
+.content-area { padding: 36px 40px; display: flex; flex-direction: column; gap: 28px; }
 
-        
+/* ── SECTION CARDS ── */
+.section-card { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+.section-head-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.section-label-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+.section-head h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 500; color: var(--ink); white-space: nowrap; }
+.updated-badge { font-size: 0.7rem; color: var(--ink-light); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.updated-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); display: inline-block; }
 
-        function handleGenerateDeadlines() {
-            const select = document.getElementById('deadlineQuerySelect');
-            const id = select ? select.value : '';
-            if (!id) { showNotification('Please add a query first', 'warning'); return; }
-            generate_deadlines_ai(id);
-        }
+/* ── TOP ROW ── */
+.top-row { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const dlSel = document.getElementById('deadlineQuerySelect');
-            if (dlSel && dlSel.value) renderGeneratedDeadlines(dlSel.value);
-            if (dlSel) dlSel.addEventListener('change', e => renderGeneratedDeadlines(e.target.value));
-        });
-    </script>
+/* ── PROGRESS CARD ── */
+.progress-card .card-body {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 24px; padding: 32px 24px;
+}
+.circle-ring { position: relative; width: 148px; height: 148px; flex-shrink: 0; }
+.circle-ring svg { transform: rotate(-90deg); }
+.ring-bg   { fill: none; stroke: var(--border); stroke-width: 9; }
+.ring-fill {
+  fill: none; stroke: url(#goldGrad); stroke-width: 9; stroke-linecap: round;
+  stroke-dasharray: 339.3; stroke-dashoffset: 339.3;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ring-pct  { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; color: var(--ink); line-height: 1; }
+.ring-sub  { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-light); margin-top: 3px; }
+.stats-row { display: flex; width: 100%; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.stat-box  { flex: 1; padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
+.stat-box:last-child { border-right: none; }
+.stat-box strong { display: block; font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 400; color: var(--ink); line-height: 1; }
+.stat-box span   { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); margin-top: 4px; display: block; }
+.refresh-btn {
+  display: flex; align-items: center; gap: 7px;
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  padding: 9px 20px; cursor: pointer; transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);
+}
+.refresh-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-    <script src="static/js/dashboard.js"></script>
+/* ── DEADLINES CARD ── */
+.deadlines-card { display: flex; flex-direction: column; }
+
+/* Header row: fix wrapping by stacking on smaller space */
+.deadlines-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+  gap: 12px; flex-wrap: wrap;
+}
+.deadlines-header-left { display: flex; align-items: center; gap: 10px; }
+.deadlines-actions {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: nowrap;
+}
+.dl-select {
+  height: 36px; padding: 0 10px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--ink-muted);
+  outline: none; cursor: pointer; transition: border-color 0.2s;
+  max-width: 180px; min-width: 120px;
+}
+.dl-select:focus { border-color: var(--gold); }
+
+.btn-sm {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 36px; padding: 0 14px;
+  border-radius: 4px; cursor: pointer; transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+  font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase;
+  white-space: nowrap; border: 1px solid transparent;
+  flex-shrink: 0;
+}
+.btn-sm i { font-size: 0.72rem; }
+.btn-sm-gold { background: var(--gold); color: white; border-color: var(--gold); }
+.btn-sm-gold:hover { background: #9A7A22; border-color: #9A7A22; }
+.btn-sm-gold:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-sm-outline { background: transparent; color: var(--ink-muted); border-color: var(--border); }
+.btn-sm-outline:hover { border-color: var(--ink); color: var(--ink); }
+
+.deadlines-body { flex: 1; }
+.dl-group { padding: 16px 24px; border-bottom: 1px solid var(--border); }
+.dl-group:last-child { border-bottom: none; }
+.dl-group-label {
+  font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-light); font-weight: 400; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.dl-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.dl-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.dl-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+}
+.dl-item:last-child { border-bottom: none; }
+.dl-left { display: flex; align-items: center; gap: 12px; }
+.dl-check-wrap { position: relative; width: 18px; height: 18px; flex-shrink: 0; }
+.dl-check-wrap input {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 2; width: 100%; height: 100%;
+}
+.dl-checkmark {
+  width: 18px; height: 18px; border: 1.5px solid var(--border-dark);
+  border-radius: 3px; background: var(--cream); transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.dl-check-wrap input:checked ~ .dl-checkmark { background: var(--sage); border-color: var(--sage); }
+.dl-check-wrap input:checked ~ .dl-checkmark::after {
+  content: ''; width: 5px; height: 9px;
+  border: 2px solid white; border-top: none; border-left: none;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+.dl-info { display: flex; flex-direction: column; gap: 2px; }
+.dl-title { font-size: 0.84rem; color: var(--ink); font-weight: 300; }
+.dl-date  { font-size: 0.71rem; color: var(--ink-light); }
+.dl-item.done .dl-title { text-decoration: line-through; color: var(--ink-light); }
+.dl-item-actions { display: flex; gap: 4px; }
+.icon-btn {
+  width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 4px;
+  background: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; color: var(--ink-light); transition: all 0.2s;
+}
+.icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+.icon-btn.delete-btn:hover { border-color: #C0392B; color: #C0392B; }
+.dl-empty { font-size: 0.82rem; color: var(--ink-light); font-weight: 300; font-style: italic; padding: 6px 0; }
+
+/* ── QUERY SECTION ── */
+.query-input-panel { display: none; border-bottom: 1px solid var(--border); }
+.query-input-panel.open { display: block; }
+.query-input-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 24px; background: var(--cream); border-bottom: 1px solid var(--border);
+}
+.query-input-head h4 { font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-muted); font-weight: 400; }
+.query-textarea {
+  width: 100%; min-height: 110px; padding: 16px 24px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 300;
+  color: var(--ink); background: white; border: none; outline: none; resize: vertical; line-height: 1.7;
+}
+.query-textarea::placeholder { color: var(--ink-light); }
+.query-panel-foot {
+  padding: 10px 16px; background: var(--cream); border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end;
+}
+.btn-save {
+  display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 18px;
+  background: var(--ink); color: white; border: none; border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+}
+.btn-save:hover { background: var(--gold); }
+
+/* query grid */
+.query-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.query-col { padding: 24px; border-right: 1px solid var(--border); }
+.query-col:last-child { border-right: none; }
+.query-col-title { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 500; color: var(--ink); margin-bottom: 16px; }
+
+.q-card {
+  background: var(--cream); border: 1px solid var(--border); border-radius: 6px;
+  padding: 14px 16px; margin-bottom: 10px; transition: border-color 0.2s;
+}
+.q-card:hover { border-color: var(--border-dark); }
+.q-card-text { font-size: 0.85rem; color: var(--ink); font-weight: 400; line-height: 1.5; margin-bottom: 4px; }
+.q-card-meta { font-size: 0.7rem; color: var(--ink-light); margin-bottom: 10px; }
+.q-status-badge {
+  display: inline-block; font-size: 0.7rem; padding: 3px 8px;
+  border-radius: 3px; margin-bottom: 8px;
+  background: var(--sage-light); color: var(--sage);
+}
+.btn-analyze {
+  display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 12px;
+  background: none; border: 1px solid var(--border-dark); border-radius: 3px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-muted); cursor: pointer; transition: all 0.2s;
+}
+.btn-analyze:hover { border-color: var(--gold); color: var(--gold); }
+.btn-find {
+  display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 12px;
+  background: var(--sage); border: none; border-radius: 3px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: white; cursor: pointer; transition: background 0.2s;
+}
+.btn-find:hover { background: #3A4E42; }
+.queries-empty { font-size: 0.82rem; color: var(--ink-light); font-weight: 300; font-style: italic; }
+
+.analysis-results { display: none; }
+.analysis-results.open { display: block; }
+.analysis-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; background: var(--gold-pale);
+  border: 1px solid var(--border); border-radius: 6px 6px 0 0;
+}
+.analysis-head h4 { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500; color: var(--ink); }
+.analysis-body {
+  padding: 16px 14px; font-size: 0.85rem; color: var(--ink-muted);
+  line-height: 1.7; font-weight: 300;
+  border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .top-row { grid-template-columns: 1fr; }
+  .deadlines-actions { flex-wrap: wrap; }
+}
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { transform: translateX(-260px); width: 260px; }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .query-grid { grid-template-columns: 1fr; }
+  .query-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .query-col:last-child { border-bottom: none; }
+  .content-area { padding: 24px 20px; }
+  header { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<div id="notification-container"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-bg"></div>
+  <div class="logo-container">
+    <div class="logo-name">Soven <span>Legal</span></div>
+    <div class="logo-sub">Simplifying your legal journey</div>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="/dashboard" class="active"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+      <li><a href="/documents"><i class="fas fa-file-alt"></i><span>Documents</span></a></li>
+      <div class="nav-divider"></div>
+      <li><a href="/hired-lawyers"><i class="fas fa-user-tie"></i><span>My Lawyers</span></a></li>
+      <li><a href="/lawyers"><i class="fas fa-search"></i><span>Find Lawyers</span></a></li>
+      <div class="nav-divider"></div>
+      <li><a href="/chat-interface"><i class="fas fa-comments"></i><span>Messages</span></a></li>
+      <li><a href="/legal-aid"><i class="fas fa-hands-helping"></i><span>Legal Help</span></a></li>
+    </ul>
+    <div class="upload-wrap">
+      <a href="/upload-case-file" class="btn-upload"><i class="fas fa-upload"></i> Upload Case File</a>
+    </div>
+  </nav>
+  <div class="sidebar-footer"><p>&copy; 2025 Soven Legal</p></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <h1 class="header-title">Dashboard</h1>
+    </div>
+    <div class="user-info">
+      <span class="user-name">{{ user.name }}</span>
+      <div class="avatar">{{ user.initials }}</div>
+    </div>
+  </header>
+
+  <div class="content-area">
+
+    <!-- TOP ROW: Progress + Deadlines -->
+    <div class="top-row">
+
+      <!-- PROGRESS -->
+      <div class="section-card progress-card">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label-dot"></div>
+            <h3>Case Progress</h3>
+          </div>
+          <span class="updated-badge">Updated just now</span>
+        </div>
+        <div class="card-body">
+          <div class="circle-ring">
+            <svg width="148" height="148" viewBox="0 0 120 120">
+              <defs>
+                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#B8922A"/>
+                  <stop offset="100%" stop-color="#D4A843"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="60" cy="60" r="54"/>
+              <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="54"/>
+            </svg>
+            <div class="ring-label">
+              <span class="ring-pct" id="progress-percent">{{ progress }}%</span>
+              <span class="ring-sub">Complete</span>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box">
+              <strong>{{ completed_tasks }}</strong>
+              <span>Done</span>
+            </div>
+            <div class="stat-box">
+              <strong>{{ pending_tasks }}</strong>
+              <span>Pending</span>
+            </div>
+          </div>
+          <button class="refresh-btn" onclick="refreshProgress()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- DEADLINES -->
+      <div class="section-card deadlines-card">
+        <!-- Header split from actions to avoid wrapping -->
+        <div style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label-dot"></div>
+            <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:500; color:var(--ink);">Upcoming Deadlines</h3>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <select id="deadlineQuerySelect" class="dl-select" style="flex:1; min-width:140px; max-width:260px;">
+              {% if saved_queries %}
+                {% for q in saved_queries %}
+                  <option value="{{ q.id }}">{{ q.text }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="" disabled selected>No queries yet</option>
+              {% endif %}
+            </select>
+            <button class="btn-sm btn-sm-gold generate_deadlines" id="generateDeadlinesBtn"
+              onclick="handleGenerateDeadlines()" {% if not saved_queries %}disabled{% endif %}>
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Deadlines
+            </button>
+            <button class="btn-sm btn-sm-outline" onclick="addDeadline()">
+              <i class="fas fa-plus"></i> Add Deadline
+            </button>
+          </div>
+        </div>
+
+        <div class="deadlines-body">
+          <!-- AI deadlines -->
+          <div class="dl-group generated-deadlines">
+            <div class="dl-group-label">AI-Generated</div>
+            <ul id="query-deadlines-list" class="dl-list">
+              {% if saved_queries and saved_queries[0].deadlines %}
+                {% for dl in saved_queries[0].deadlines %}
+                  {% if dl.task and dl.due_date %}
+                  <li class="dl-item{% if dl.completed %} done{% endif %}">
+                    <div class="dl-left">
+                      <label class="dl-check-wrap">
+                        <input type="checkbox" {% if dl.completed %}checked{% endif %}
+                          onchange="toggleAiDeadline('{{ saved_queries[0].id }}','{{ dl.id }}',this.checked)">
+                        <div class="dl-checkmark"></div>
+                      </label>
+                      <div class="dl-info">
+                        <span class="dl-title">{{ dl.task }}</span>
+                        <span class="dl-date">Due: {{ dl.due_date }}</span>
+                      </div>
+                    </div>
+                  </li>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <li class="dl-empty">No AI deadlines yet — click Generate Deadlines.</li>
+              {% endif %}
+            </ul>
+          </div>
+
+          <!-- Manual deadlines -->
+          <div class="dl-group manual-deadlines">
+            <div class="dl-group-label">Manual</div>
+            <ul id="deadline-list" class="dl-list">
+              {% for deadline in deadlines %}
+              <li class="dl-item{% if deadline.completed %} done{% endif %}" data-id="{{ deadline.id }}">
+                <div class="dl-left">
+                  <label class="dl-check-wrap">
+                    <input type="checkbox" {% if deadline.completed %}checked{% endif %}
+                      onchange="toggleDeadline('{{ deadline.id }}',this.checked)">
+                    <div class="dl-checkmark"></div>
+                  </label>
+                  <div class="dl-info">
+                    <span class="dl-title">{{ deadline.title }}</span>
+                    <span class="dl-date">{{ deadline.date }}</span>
+                  </div>
+                </div>
+                <div class="dl-item-actions">
+                  <button class="icon-btn edit-btn" onclick="editDeadline('{{ deadline.id }}')"><i class="fas fa-edit"></i></button>
+                  <button class="icon-btn delete-btn" onclick="deleteDeadline('{{ deadline.id }}')"><i class="fas fa-trash"></i></button>
+                </div>
+              </li>
+              {% else %}
+              <li class="dl-empty">No manual deadlines yet.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /top-row -->
+
+    <!-- QUERY SECTION -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-label-dot"></div>
+          <h3>Case Query Management</h3>
+        </div>
+        <button class="btn-sm btn-sm-outline" id="newQueryBtn">
+          <i class="fas fa-plus"></i> New Query
+        </button>
+      </div>
+
+      <!-- New query input -->
+      <div class="query-input-panel" id="queryInputContainer">
+        <div class="query-input-head">
+          <h4>Create New Query</h4>
+          <button class="icon-btn" id="closeQueryBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <textarea id="userQuery" class="query-textarea" placeholder="Enter your legal query here…"></textarea>
+        <div class="query-panel-foot">
+          <button class="btn-save" onclick="saveQuery()"><i class="fas fa-save"></i> Save Query</button>
+        </div>
+      </div>
+
+      <!-- Two-column grid -->
+      <div class="query-grid">
+        <div class="query-col">
+          <div class="query-col-title">Saved Queries</div>
+          <div id="queriesList">
+            {% for q in saved_queries %}
+            <div class="q-card">
+              <p class="q-card-text">{{ q.text }}</p>
+              <div class="q-card-meta">{{ q.date }}</div>
+              {% if q.scan_status %}
+                <span class="q-status-badge">{{ q.scan_status }}</span><br>
+                <button class="btn-find" onclick="find_users('{{ q.id }}')"><i class="fas fa-search"></i> Find Users</button>
+              {% else %}
+                <button class="btn-analyze" onclick="scan_query('{{ q.text }}')"><i class="fas fa-microscope"></i> Analyze</button>
+              {% endif %}
+            </div>
+            {% else %}
+            <p class="queries-empty">No queries yet. Create your first with "New Query".</p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="query-col">
+          <div class="query-col-title">Analysis Results</div>
+          <div class="analysis-results" id="analysisResults">
+            <div class="analysis-head">
+              <h4>Results</h4>
+              <button class="icon-btn" onclick="closeAnalysis()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="analysis-body" id="analysisContent"></div>
+          </div>
+          <p class="queries-empty" id="analysisPlaceholder">Run an analysis on a saved query to see results here.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+</div><!-- /main-content -->
+
+<script id="saved-queries-data" type="application/json">{{ saved_queries | tojson }}</script>
+
+<script>
+/* ── NOTIFICATION ── */
+function showNotification(msg, type, title) {
+  type = type || 'info';
+  var icons = { success:'fa-check', warning:'fa-exclamation', error:'fa-times', info:'fa-info' };
+  var labels = { success:'Success', warning:'Heads up', error:'Error', info:'Info' };
+  var c = document.getElementById('notification-container');
+  var el = document.createElement('div');
+  el.className = 'notif ' + type;
+  el.innerHTML =
+    '<div class="notif-icon"><i class="fas ' + (icons[type]||'fa-info') + '"></i></div>' +
+    '<div class="notif-body">' +
+      '<div class="notif-title">' + (title || labels[type] || 'Info') + '</div>' +
+      '<div class="notif-msg">' + msg + '</div>' +
+    '</div>' +
+    '<button class="notif-close" onclick="dismissNotif(this.parentElement)"><i class="fas fa-times"></i></button>' +
+    '<div class="notif-progress"></div>';
+  c.appendChild(el);
+  setTimeout(function() { dismissNotif(el); }, 4200);
+}
+function dismissNotif(el) {
+  if (!el || !el.parentElement) return;
+  el.style.animation = 'notifOut 0.3s ease forwards';
+  setTimeout(function() { if (el.parentElement) el.remove(); }, 300);
+}
+
+/* ── SIDEBAR ── */
+document.getElementById('menuToggle').addEventListener('click', function() {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+/* ── DATA ── */
+var savedQueries = (function() {
+  try { var el = document.getElementById('saved-queries-data'); return el ? JSON.parse(el.textContent || '[]') : []; }
+  catch(e) { return []; }
+})();
+
+/* ── PROGRESS RING ── */
+function setRing(pct) {
+  var ring = document.getElementById('ringFill');
+  if (!ring) return;
+  ring.style.strokeDashoffset = 339.3 - (339.3 * pct / 100);
+}
+
+/* ── DEADLINES ── */
+function renderGeneratedDeadlines(queryId) {
+  var ul = document.getElementById('query-deadlines-list');
+  if (!ul) return;
+  ul.innerHTML = '';
+  var q = savedQueries.find(function(x) { return x.id === queryId; });
+  if (!q) { ul.innerHTML = '<li class="dl-empty">No query selected.</li>'; return; }
+  var dls = Array.isArray(q.deadlines) ? q.deadlines : [];
+  if (!dls.length) { ul.innerHTML = '<li class="dl-empty">No AI deadlines yet — click Generate Deadlines.</li>'; return; }
+  dls.forEach(function(d) {
+    if (d.task && d.due_date) {
+      var li = document.createElement('li');
+      li.className = 'dl-item';
+      li.innerHTML =
+        '<div class="dl-left">' +
+          '<div class="dl-info">' +
+            '<span class="dl-title">' + d.task + '</span>' +
+            '<span class="dl-date">Due: ' + d.due_date + '</span>' +
+          '</div>' +
+        '</div>';
+      ul.appendChild(li);
+    }
+  });
+}
+
+function handleGenerateDeadlines() {
+  var sel = document.getElementById('deadlineQuerySelect');
+  var id = sel ? sel.value : '';
+  if (!id) { showNotification('Please add a query first', 'warning', 'No Query Selected'); return; }
+  generate_deadlines_ai(id);
+}
+
+function closeAnalysis() {
+  var r = document.getElementById('analysisResults');
+  var p = document.getElementById('analysisPlaceholder');
+  if (r) r.classList.remove('open');
+  if (p) p.style.display = '';
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', function() {
+  var pctEl = document.getElementById('progress-percent');
+  var pct = pctEl ? parseInt(pctEl.textContent) || 0 : 0;
+  setTimeout(function() { setRing(pct); }, 200);
+
+  var dlSel = document.getElementById('deadlineQuerySelect');
+  if (dlSel && dlSel.value) renderGeneratedDeadlines(dlSel.value);
+  if (dlSel) dlSel.addEventListener('change', function(e) { renderGeneratedDeadlines(e.target.value); });
+
+  var newQ = document.getElementById('newQueryBtn');
+  var closeQ = document.getElementById('closeQueryBtn');
+  var qPanel = document.getElementById('queryInputContainer');
+  if (newQ)   newQ.addEventListener('click',   function() { qPanel.classList.add('open'); });
+  if (closeQ) closeQ.addEventListener('click', function() { qPanel.classList.remove('open'); });
+});
+</script>
+
+<script src="static/js/dashboard.js"></script>
 </body>
 </html>

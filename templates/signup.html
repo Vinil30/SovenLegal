@@ -1,100 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up | Soven Legal</title>
-    <link rel="stylesheet" href="/static/css/signup.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up | Soven Legal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+:root{--cream:#F8F5F0;--warm-white:#FDFCFA;--ink:#1A1814;--ink-muted:#4A4640;--ink-light:#8A8480;--gold:#B8922A;--gold-light:#D4A843;--gold-pale:#F5EDD8;--sage:#4A5E52;--sage-light:#EEF2EF;--border:#E4DDD4;--border-dark:#C8BFB4}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:'DM Sans',sans-serif;font-weight:300}
+body{display:flex;overflow:hidden}
+
+/* ── LEFT PANEL ── */
+.signup-left{
+  width:42%;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  padding:52px 52px;
+  flex-shrink:0;
+}
+.left-bg{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=85&auto=format&fit=crop');background-size:cover;background-position:center;filter:sepia(20%) saturate(80%)}
+.left-tint{position:absolute;inset:0;background:linear-gradient(160deg,rgba(26,24,20,0.88) 0%,rgba(26,24,20,0.70) 55%,rgba(184,146,42,0.28) 100%)}
+.left-content{position:relative;z-index:1;display:flex;flex-direction:column;height:100%}
+.deco-quote{position:absolute;bottom:-60px;right:-30px;font-family:'Cormorant Garamond',serif;font-size:20rem;color:rgba(255,255,255,0.03);line-height:1;pointer-events:none;z-index:0}
+
+/* Brand */
+.signup-brand{margin-bottom:auto}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:500;color:white;letter-spacing:0.02em;line-height:1}
+.brand-name span{color:var(--gold-light)}
+.brand-tagline{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:6px;font-weight:400}
+
+/* Middle headline */
+.left-headline{margin:auto 0}
+.left-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);font-weight:400;margin-bottom:18px}
+.left-eyebrow::before{content:'';width:26px;height:1px;background:var(--gold-light)}
+.left-headline h2{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;line-height:1.1;color:white}
+.left-headline h2 em{font-style:italic;color:var(--gold-light)}
+.left-headline p{font-size:0.86rem;color:rgba(255,255,255,0.5);margin-top:14px;line-height:1.75;max-width:300px;font-weight:300}
+
+/* Features */
+.signup-features{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(255,255,255,0.1);padding-top:28px}
+.feature{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+.feature:last-child{border-bottom:none}
+.feature-icon{width:34px;height:34px;border-radius:6px;background:rgba(184,146,42,0.18);border:1px solid rgba(184,146,42,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feature-icon i{font-size:0.78rem;color:var(--gold-light)}
+.feature-text{font-size:0.8rem;color:rgba(255,255,255,0.55);font-weight:300}
+
+/* ── RIGHT PANEL ── */
+.signup-right{
+  width:58%;
+  background:var(--warm-white);
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:48px 56px;
+  position:relative;
+  overflow-y:auto;
+}
+.signup-right::before{content:'';position:absolute;top:0;left:0;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--border) 20%,var(--border) 80%,transparent)}
+
+.signup-form-container{width:100%;max-width:460px;padding: 8px 0}
+
+/* Header */
+.form-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:0.67rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:400;margin-bottom:16px}
+.form-eyebrow::before{content:'';width:22px;height:1px;background:var(--gold)}
+.signup-form-container h2{font-family:'Cormorant Garamond',serif;font-size:2.3rem;font-weight:400;color:var(--ink);line-height:1.1;margin-bottom:6px}
+.signup-subtitle{font-size:0.84rem;color:var(--ink-light);font-weight:300;margin-bottom:32px}
+
+/* Form */
+.signup-form{display:flex;flex-direction:column;gap:0}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{position:relative;margin-bottom:18px}
+.form-group label{display:block;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:400;margin-bottom:7px}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"]{
+  width:100%;
+  height:48px;
+  padding:0 44px 0 14px;
+  background:var(--cream);
+  border:1px solid var(--border);
+  border-radius:4px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.88rem;
+  font-weight:300;
+  color:var(--ink);
+  outline:none;
+  transition:border-color 0.25s,background 0.25s,box-shadow 0.25s;
+  -webkit-appearance:none;
+}
+.form-group input:focus{border-color:var(--gold);background:var(--warm-white);box-shadow:0 0 0 3px rgba(184,146,42,0.1)}
+.form-group input::placeholder{color:var(--ink-light);font-weight:300}
+.input-icon{position:absolute;right:14px;bottom:14px;font-size:0.78rem;color:var(--ink-light);pointer-events:none;transition:color 0.25s}
+.form-group:focus-within .input-icon{color:var(--gold)}
+.toggle-password{position:absolute;right:12px;bottom:11px;background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:0.78rem;padding:2px;transition:color 0.2s;z-index:2}
+.toggle-password:hover{color:var(--gold)}
+#password~.input-icon,#confirmPassword~.input-icon{display:none}
+
+/* Password hint */
+.password-hint{margin-top:6px}
+.password-hint p{font-size:0.72rem;color:var(--ink-light);font-weight:300;display:flex;align-items:center;gap:6px}
+.password-hint p::before{content:'';display:inline-block;width:14px;height:1px;background:var(--border)}
+
+/* Checkbox */
+.checkbox-group{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px}
+.checkbox-group input[type="checkbox"]{width:16px;height:16px;margin-top:2px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.checkbox-group label{font-size:0.8rem;color:var(--ink-muted);font-weight:300;line-height:1.6;cursor:pointer}
+.checkbox-group label a{color:var(--gold);text-decoration:none;transition:color 0.2s}
+.checkbox-group label a:hover{color:var(--ink)}
+
+/* Submit */
+.btn-signup{
+  width:100%;
+  height:52px;
+  background:var(--ink);
+  color:var(--warm-white);
+  border:1px solid var(--ink);
+  border-radius:4px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.78rem;
+  font-weight:400;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.25s ease;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-signup:hover{background:var(--gold);border-color:var(--gold)}
+.btn-signup i{font-size:0.75rem;opacity:0.7}
+
+/* Footer */
+.signup-footer{text-align:center;font-size:0.83rem;color:var(--ink-light);font-weight:300;margin-top:24px}
+.signup-footer a{color:var(--gold);text-decoration:none;font-weight:400;transition:color 0.2s}
+.signup-footer a:hover{color:var(--ink)}
+
+/* Trust row */
+.trust-row{display:flex;justify-content:center;gap:20px;margin-top:24px;padding-top:22px;border-top:1px solid var(--border)}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:0.71rem;color:var(--ink-light);font-weight:300}
+.trust-item i{font-size:0.68rem;color:var(--gold)}
+
+/* Back link */
+.back-link{position:fixed;top:24px;right:32px;display:flex;align-items:center;gap:8px;font-size:0.74rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-light);text-decoration:none;transition:color 0.2s;z-index:10}
+.back-link:hover{color:var(--ink)}
+.back-link i{font-size:0.7rem}
+
+/* Progress steps */
+.step-indicator{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.step-line{flex:1;height:1px;background:var(--border)}
+.step-dot.inactive{background:var(--border)}
+
+/* Section divider inside form */
+.form-section-label{font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-light);font-weight:400;margin:4px 0 16px;display:flex;align-items:center;gap:10px}
+.form-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+@media(max-width:900px){
+  body{flex-direction:column;overflow:auto}
+  .signup-left{width:100%;min-height:260px;padding:36px 28px}
+  .left-headline h2{font-size:2rem}
+  .signup-right{width:100%;padding:36px 24px}
+  .signup-right::before{display:none}
+  html,body{height:auto;overflow:auto}
+  .back-link{position:absolute}
+}
+</style>
 </head>
 <body>
-    <div class="signup-container">
-        <div class="signup-left">
-            <div class="signup-brand">
-                <h1>Akaash Pandya</h1>
-                <p>Simplifying your legal journey</p>
-            </div>
-            <div class="signup-features">
-                <div class="feature">
-                    <i class="fas fa-file-alt"></i>
-                    <span>AI-powered document analysis</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Smart deadline tracking</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-gavel"></i>
-                    <span>Fair legal representation</span>
-                </div>
-            </div>
-        </div>
-        <div class="signup-right">
-            <div class="signup-form-container">
-                <h2>Create Your Account</h2>
-                <p class="signup-subtitle">Get started with your legal management today</p>
-                
-                <form id="signupForm" class="signup-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" name="firstName" required>
-                            <i class="fas fa-user input-icon"></i>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" name="lastName" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                        <i class="fas fa-envelope input-icon"></i>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required minlength="8">
-                        <i class="fas fa-lock input-icon"></i>
-                        <button type="button" class="toggle-password" id="togglePassword">
-                            <i class="far fa-eye"></i>
-                        </button>
-                        <div class="password-hint">
-                            <p>Must be at least 8 characters</p>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" required>
-                        <i class="fas fa-lock input-icon"></i>
-                        <button type="button" class="toggle-password" id="toggleConfirmPassword">
-                            <i class="far fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="form-group">
-    <label for="phone">Phone</label>
-    <input type="text" id="phone" name="phone" required>
-    <i class="fas fa-phone input-icon"></i>
-</div>
 
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a></label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-signup">Create Account</button>
-                </form>
-                
-                
-                <div class="signup-footer">
-                    Already have an account? <a href="/login">Log in</a>
-                </div>
-            </div>
-        </div>
+<a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Home</a>
+
+<!-- LEFT — brand + image -->
+<div class="signup-left">
+  <div class="left-bg"></div>
+  <div class="left-tint"></div>
+  <div class="deco-quote">"</div>
+  <div class="left-content">
+
+    <div class="signup-brand">
+      <div class="brand-name">Soven <span>Legal</span></div>
+      <div class="brand-tagline">Simplifying your legal journey</div>
     </div>
 
-    <script src="/static/js/signup.js"></script>
+    <div class="left-headline">
+      <div class="left-eyebrow">Join thousands of users</div>
+      <h2>Start your case<br><em>the right way.</em></h2>
+      <p>Get full control of your legal process from day one — documents, deadlines, and representation in one place.</p>
+    </div>
+
+    <div class="signup-features">
+      <div class="feature">
+        <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+        <span class="feature-text">AI-powered document analysis</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+        <span class="feature-text">Smart deadline tracking</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><i class="fas fa-gavel"></i></div>
+        <span class="feature-text">Fair legal representation</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RIGHT — form -->
+<div class="signup-right">
+  <div class="signup-form-container">
+
+    <div class="form-eyebrow">Free account</div>
+    <h2>Create Your Account</h2>
+    <p class="signup-subtitle">Get started with your legal management today</p>
+
+    <form id="signupForm" class="signup-form">
+
+      <div class="form-section-label">Personal details</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" placeholder="John" required>
+          <i class="fas fa-user input-icon"></i>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        <i class="fas fa-envelope input-icon"></i>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" name="phone" placeholder="+1 (555) 000-0000" required>
+        <i class="fas fa-phone input-icon"></i>
+      </div>
+
+      <div class="form-section-label" style="margin-top:6px">Security</div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Min. 8 characters" required minlength="8">
+        <button type="button" class="toggle-password" id="togglePassword"><i class="far fa-eye"></i></button>
+        <div class="password-hint"><p>Must be at least 8 characters</p></div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat your password" required>
+        <button type="button" class="toggle-password" id="toggleConfirmPassword"><i class="far fa-eye"></i></button>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <input type="checkbox" id="terms" name="terms" required>
+        <label for="terms">I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a></label>
+      </div>
+
+      <button type="submit" class="btn-signup">
+        <span>Create Account</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+
+    </form>
+
+    <div class="signup-footer">
+      Already have an account? <a href="/login">Sign in</a>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-item"><i class="fas fa-shield-alt"></i> Bank-grade encryption</div>
+      <div class="trust-item"><i class="fas fa-lock"></i> SSL secured</div>
+      <div class="trust-item"><i class="fas fa-user-shield"></i> Privacy protected</div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/js/signup.js"></script>
+<script>
+function bindToggle(btnId, inputId){
+  const btn=document.getElementById(btnId);
+  const inp=document.getElementById(inputId);
+  if(btn&&inp){
+    btn.addEventListener('click',()=>{
+      const show=inp.type==='password';
+      inp.type=show?'text':'password';
+      btn.querySelector('i').className=show?'far fa-eye-slash':'far fa-eye';
+    });
+  }
+}
+bindToggle('togglePassword','password');
+bindToggle('toggleConfirmPassword','confirmPassword');
+</script>
 </body>
 </html>

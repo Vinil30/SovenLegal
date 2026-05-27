@@ -1,217 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soven Legal - Simplify Your Legal Process</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soven Legal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+:root{--cream:#F8F5F0;--warm-white:#FDFCFA;--ink:#1A1814;--ink-muted:#4A4640;--ink-light:#8A8480;--gold:#B8922A;--gold-light:#D4A843;--gold-pale:#F5EDD8;--sage:#4A5E52;--sage-light:#EEF2EF;--border:#E4DDD4;--border-dark:#C8BFB4}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background-color:var(--warm-white);color:var(--ink);font-weight:300;line-height:1.7;overflow-x:hidden}
+header{position:fixed;top:0;width:100%;z-index:100;background:rgba(253,252,250,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow 0.3s ease}
+header.scrolled{box-shadow:0 2px 24px rgba(26,24,20,0.06)}
+header .container{max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{display:flex;flex-direction:column}
+.logo h1{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:500;letter-spacing:0.02em;color:var(--ink);line-height:1}
+.logo h1 span{color:var(--gold)}
+.logo p{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-light);font-weight:400}
+nav ul{list-style:none;display:flex;gap:36px}
+nav a{text-decoration:none;font-size:0.82rem;font-weight:400;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);transition:color 0.2s;position:relative}
+nav a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width 0.3s ease}
+nav a:hover{color:var(--ink)}
+nav a:hover::after{width:100%}
+.auth-buttons{display:flex;gap:10px;align-items:center}
+.btn{text-decoration:none;font-size:0.78rem;font-weight:400;letter-spacing:0.08em;text-transform:uppercase;padding:10px 22px;border-radius:3px;transition:all 0.25s ease;display:inline-block}
+.btn-outline{border:1px solid var(--border-dark);color:var(--ink-muted);background:transparent}
+.btn-outline:hover{border-color:var(--ink);color:var(--ink);background:var(--cream)}
+.btn-primary{background:var(--ink);color:var(--warm-white);border:1px solid var(--ink)}
+.btn-primary:hover{background:var(--gold);border-color:var(--gold);color:white}
+.btn-large{padding:15px 36px;font-size:0.82rem}
+.btn-gold{background:var(--gold);color:white;border:1px solid var(--gold)}
+.btn-gold:hover{background:#9A7A22;border-color:#9A7A22}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:72px;background:var(--warm-white);position:relative;overflow:hidden}
+.hero-bg-image{position:absolute;top:0;right:0;width:52%;height:100%;object-fit:cover;clip-path:polygon(8% 0,100% 0,100% 100%,0 100%);opacity:0.18;filter:sepia(30%) saturate(80%)}
+.hero-overlay{position:absolute;top:0;right:0;width:52%;height:100%;clip-path:polygon(8% 0,100% 0,100% 100%,0 100%);background:var(--cream);opacity:0.12}
+.hero::after{content:'"';font-family:'Cormorant Garamond',serif;font-size:28rem;color:var(--border);position:absolute;right:4%;top:-6%;line-height:1;pointer-events:none;opacity:0.4}
+.hero .container{max-width:1200px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:400;margin-bottom:24px}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--gold)}
+.hero-content h1{font-family:'Cormorant Garamond',serif;font-size:4.2rem;font-weight:400;line-height:1.08;letter-spacing:-0.01em;color:var(--ink);margin-bottom:24px}
+.hero-content h1 em{font-style:italic;color:var(--gold)}
+.hero-content .subtitle{font-size:1rem;color:var(--ink-muted);max-width:440px;margin-bottom:44px;line-height:1.75;font-weight:300}
+.cta-buttons{display:flex;gap:14px;flex-wrap:wrap}
+.hero-visual{position:relative;display:flex;flex-direction:column;gap:20px}
+.hero-card{background:white;border:1px solid var(--border);border-radius:8px;padding:28px 32px;box-shadow:0 4px 32px rgba(26,24,20,0.06);animation:floatUp 0.8s ease both}
+.hero-card:nth-child(1){animation-delay:0.1s}
+.hero-card:nth-child(2){animation-delay:0.25s;margin-left:40px}
+.hero-card:nth-child(3){animation-delay:0.4s;margin-left:20px}
+@keyframes floatUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero-card-label{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);margin-bottom:12px;font-weight:400}
+.hero-card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:500;color:var(--ink);margin-bottom:10px}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;width:73%}
+.progress-meta{display:flex;justify-content:space-between;margin-top:6px;font-size:0.72rem;color:var(--ink-light)}
+.deadline-list{display:flex;flex-direction:column;gap:8px}
+.deadline-item{display:flex;align-items:center;gap:10px;font-size:0.82rem}
+.deadline-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-urgent{background:#C0392B}.dot-soon{background:var(--gold)}.dot-ok{background:var(--sage)}
+.deadline-date{margin-left:auto;font-size:0.72rem;color:var(--ink-light)}
+
+/* ── SECTION COMMON ── */
+section{padding:100px 0}
+.container{max-width:1200px;margin:0 auto;padding:0 40px}
+.section-label{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:400;display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.section-label::before{content:'';width:28px;height:1px;background:var(--gold)}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:400;line-height:1.1;color:var(--ink);margin-bottom:16px}
+.section-subtitle{font-size:0.95rem;color:var(--ink-muted);font-weight:300;max-width:480px}
+
+/* ── IMAGE STRIP ── */
+.image-strip{background:var(--ink);padding:0;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);height:280px}
+.strip-img-wrap{position:relative;overflow:hidden}
+.strip-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease;filter:grayscale(30%) sepia(20%);opacity:0.75}
+.strip-img-wrap:hover img{transform:scale(1.06);opacity:0.9}
+.strip-img-label{position:absolute;bottom:20px;left:20px;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-family:'DM Sans',sans-serif}
+.strip-img-label span{display:block;font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:0.02em;color:white;font-weight:400;margin-bottom:2px}
+
+/* ── FEATURES ── */
+.features{background:var(--cream);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.features-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px}
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:white}
+.feature-card{padding:44px 36px;border-right:1px solid var(--border);transition:background 0.3s ease;position:relative;overflow:hidden}
+.feature-card:last-child{border-right:none}
+.feature-card::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));transform:scaleX(0);transform-origin:left;transition:transform 0.4s ease}
+.feature-card:hover::before{transform:scaleX(1)}
+.feature-card:hover{background:var(--gold-pale)}
+.feature-number{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;color:var(--border);line-height:1;margin-bottom:20px;transition:color 0.3s}
+.feature-card:hover .feature-number{color:var(--gold-pale)}
+.feature-icon-wrap{width:44px;height:44px;border-radius:6px;background:var(--sage-light);display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:background 0.3s}
+.feature-card:hover .feature-icon-wrap{background:var(--gold-pale)}
+.feature-icon-wrap i{font-size:1rem;color:var(--sage);transition:color 0.3s}
+.feature-card:hover .feature-icon-wrap i{color:var(--gold)}
+.feature-card h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:var(--ink);margin-bottom:12px}
+.feature-card p{font-size:0.85rem;color:var(--ink-muted);line-height:1.7;font-weight:300}
+
+/* ── HOW IT WORKS ── */
+.how-it-works{background:var(--warm-white)}
+.how-it-works-inner{display:grid;grid-template-columns:1fr 2fr;gap:100px;align-items:start}
+.how-sticky{position:sticky;top:100px}
+
+/* How-it-works image block */
+.how-image-block{position:relative;margin-top:32px;border-radius:8px;overflow:hidden;height:260px}
+.how-image-block img{width:100%;height:100%;object-fit:cover;filter:sepia(15%) saturate(90%);opacity:0.85}
+.how-image-block-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,24,20,0.55) 0%,transparent 60%)}
+.how-image-stat{position:absolute;bottom:20px;left:20px;color:white}
+.how-image-stat .stat-num{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:400;line-height:1;color:var(--gold-light)}
+.how-image-stat .stat-label{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-top:4px}
+
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:64px 1fr;gap:24px;padding:40px 0;border-bottom:1px solid var(--border);opacity:0.4;transition:opacity 0.3s}
+.step:first-child{padding-top:0}
+.step:last-child{border-bottom:none}
+.step:hover{opacity:1}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:var(--gold);line-height:1;margin-top:-6px}
+.step-content h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:500;color:var(--ink);margin-bottom:10px;line-height:1.2}
+.step-content p{font-size:0.87rem;color:var(--ink-muted);font-weight:300;line-height:1.75}
+
+/* ── TESTIMONIALS ── */
+.testimonials{background:var(--ink);color:white;position:relative;overflow:hidden}
+.testimonials::before{content:'§';font-family:'Cormorant Garamond',serif;font-size:36rem;position:absolute;right:-4%;top:-20%;color:rgba(255,255,255,0.03);line-height:1;pointer-events:none}
+.testimonials .section-title{color:white}
+.testimonials .section-label{color:var(--gold-light)}
+.testimonials .section-label::before{background:var(--gold-light)}
+.testimonials-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
+
+/* Testimonial image bar */
+.testimonials-image-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px;height:180px}
+.testi-img-cell{position:relative;overflow:hidden}
+.testi-img-cell img{width:100%;height:100%;object-fit:cover;opacity:0.35;filter:grayscale(60%);transition:opacity 0.4s}
+.testi-img-cell:hover img{opacity:0.5}
+.testi-img-cell-overlay{position:absolute;inset:0;background:var(--ink);opacity:0.5}
+
+.testimonial-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.testimonial-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:44px 36px;transition:background 0.3s;position:relative}
+.testimonial-card:hover{background:rgba(255,255,255,0.08)}
+.quote-mark{font-family:'Cormorant Garamond',serif;font-size:5rem;color:var(--gold);line-height:0.6;margin-bottom:20px;display:block;opacity:0.7}
+.testimonial-text{font-size:0.92rem;color:rgba(255,255,255,0.75);line-height:1.8;font-weight:300;margin-bottom:28px;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1.1rem}
+.testimonial-divider{width:32px;height:1px;background:var(--gold);margin-bottom:20px}
+.author-name{font-size:0.82rem;font-weight:500;letter-spacing:0.06em;color:white;text-transform:uppercase}
+.author-title{font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px;font-weight:300;letter-spacing:0.08em}
+
+/* ── CTA ── */
+.cta-section{background:var(--cream);border-top:1px solid var(--border);position:relative;overflow:hidden}
+.cta-image{position:absolute;right:0;top:0;width:36%;height:100%;object-fit:cover;opacity:0.12;filter:sepia(30%)}
+.cta-inner{display:grid;grid-template-columns:1fr auto;gap:80px;align-items:center;position:relative;z-index:1}
+.cta-section h2{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:400;line-height:1.1;color:var(--ink);margin-bottom:16px}
+.cta-section p{font-size:0.95rem;color:var(--ink-muted);font-weight:300}
+.cta-side{display:flex;flex-direction:column;gap:14px;align-items:flex-start;white-space:nowrap}
+.trust-badges{display:flex;gap:24px;margin-top:60px;flex-wrap:wrap}
+.badge{display:flex;align-items:center;gap:10px;font-size:0.78rem;color:var(--ink-muted);font-weight:300}
+.badge i{color:var(--gold);font-size:0.85rem}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);color:rgba(255,255,255,0.55);padding:72px 0 40px}
+.footer-content{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:60px;margin-bottom:60px;padding-bottom:60px;border-bottom:1px solid rgba(255,255,255,0.08)}
+footer .logo h1{color:white}
+footer .logo p{color:rgba(255,255,255,0.3)}
+.footer-section p{font-size:0.84rem;line-height:1.8;font-weight:300;color:rgba(255,255,255,0.45);margin-top:12px}
+.footer-section h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:500;color:white;margin-bottom:20px;letter-spacing:0.02em}
+.footer-section ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-section ul li a{text-decoration:none;color:rgba(255,255,255,0.45);font-size:0.83rem;transition:color 0.2s;font-weight:300}
+.footer-section ul li a:hover{color:var(--gold-light)}
+.footer-section ul li{font-size:0.83rem;display:flex;align-items:flex-start;gap:10px;font-weight:300}
+.footer-section ul li i{color:var(--gold);margin-top:3px;flex-shrink:0;font-size:0.75rem}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center}
+.footer-bottom p{font-size:0.78rem;color:rgba(255,255,255,0.25);font-weight:300}
+.social-icons{display:flex;gap:16px}
+.social-icons a{width:36px;height:36px;border:1px solid rgba(255,255,255,0.12);border-radius:4px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);text-decoration:none;transition:all 0.2s;font-size:0.78rem}
+.social-icons a:hover{border-color:var(--gold);color:var(--gold)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── STATS BAR ── */
+.stats-bar{background:var(--gold);padding:0}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);max-width:1200px;margin:0 auto}
+.stat-item{padding:32px 40px;border-right:1px solid rgba(255,255,255,0.25);display:flex;flex-direction:column;gap:4px}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:400;color:white;line-height:1}
+.stat-desc{font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.75);font-weight:400}
+
+@media(max-width:1024px){.features-grid{grid-template-columns:repeat(2,1fr)}.how-it-works-inner{grid-template-columns:1fr;gap:48px}.how-sticky{position:static}.image-strip{grid-template-columns:repeat(2,1fr);height:auto}}
+@media(max-width:768px){.hero .container{grid-template-columns:1fr;gap:48px}.hero-bg-image,.hero-overlay{display:none}.hero::after{display:none}.hero-content h1{font-size:2.8rem}.testimonial-cards{grid-template-columns:1fr;gap:2px}.footer-content{grid-template-columns:1fr 1fr;gap:40px}nav{display:none}.cta-inner{grid-template-columns:1fr;gap:32px}.stats-inner{grid-template-columns:repeat(2,1fr)}.image-strip{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">
-                <h1>Akaash Pandya</h1>
-                <p>Simplifying your legal journey</p>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="/dashboard" id="dashboard-link">Dashboard</a></li>
-                    <li><a href="/lawyers" id="lawyers-link">Find Lawyers</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="/login" class="btn btn-outline">Login</a>
-                <a href="/signup" class="btn btn-primary">Sign Up</a>
-                <a href="/lawyer-login" class="btn btn-outline">Lawyer</a>
-            </div>
+
+<header id="site-header">
+  <div class="container">
+    <div class="logo">
+      <h1>Soven <span>Legal</span></h1>
+      <p>Simplifying your legal journey</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/lawyers">Find Lawyers</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      <a href="/login" class="btn btn-outline">Login</a>
+      <a href="/signup" class="btn btn-primary">Sign Up</a>
+      <a href="/lawyer-login" class="btn btn-outline">For Lawyers</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <img class="hero-bg-image" src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80&auto=format&fit=crop" alt="">
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-eyebrow">AI-Powered Legal Platform</div>
+        <h1>Take Control of Your <em>Legal</em> Matters</h1>
+        <p class="subtitle">Intelligent document analysis, deadline tracking, and fair legal representation — so you walk into every case prepared and informed.</p>
+        <div class="cta-buttons">
+          <a href="/signup" class="btn btn-primary btn-large">Get Started Free</a>
+          <a href="#how-it-works" class="btn btn-outline btn-large">See How It Works</a>
         </div>
-    </header>
-
-    <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1>Take Control of Your Legal Matters</h1>
-                    <p class="subtitle">AI-powered document analysis, deadline tracking, and fair legal representation - all in one platform.</p>
-                    <div class="cta-buttons">
-                        <a href="/signup" class="btn btn-primary btn-large">Get Started</a>
-                        <a href="#how-it-works" class="btn btn-outline btn-large">Learn More</a>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Legal documents organized">
-                </div>
-            </div>
-        </section>
-
-        <section id="features" class="features">
-            <div class="container">
-                <h2>Key Features</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <h3>Document Scanning</h3>
-                        <p>Our AI identifies missing documents and checks completeness so you don't have to guess.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <h3>Deadline Tracking</h3>
-                        <p>Never miss important dates with automated reminders synced to your calendar.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3>Progress Tracking</h3>
-                        <p>See exactly how much of your case is complete and what remains to be done.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-gavel"></i>
-                        </div>
-                        <h3>Fair Legal Representation</h3>
-                        <p>Connect with specialized lawyers and get fair pricing based on work already completed.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="how-it-works" class="how-it-works">
-            <div class="container">
-                <h2>How It Works</h2>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>Scan Your Documents</h3>
-                            <p>Upload or scan your legal documents. Our AI will analyze them and identify exactly what's missing for your case.</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>Track Deadlines</h3>
-                            <p>Get personalized deadlines for each required document or action, with reminders to keep you on track.</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>Monitor Progress</h3>
-                            <p>See a clear percentage of how much of your case is complete and what remains to be done.</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h3>Connect with Lawyers</h3>
-                            <p>When you need expert help, connect with vetted lawyers in your area of need, with automated fee negotiation.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="testimonials">
-            <div class="container">
-                <h2>What Our Users Say</h2>
-                <div class="testimonial-cards">
-                    <div class="testimonial-card">
-                        <div class="testimonial-text">
-                            "Soven Legal saved me thousands in legal fees by helping me prepare 80% of my immigration case before connecting with a lawyer."
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="author-name">Maria G.</div>
-                            <div class="author-title">Immigration Case</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="testimonial-text">
-                            "The deadline tracking feature prevented me from missing critical court dates during my divorce proceedings."
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="author-name">James T.</div>
-                            <div class="author-title">Divorce Case</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="testimonial-text">
-                            "As a small business owner, this platform helped me navigate contract disputes without breaking the bank on legal fees."
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="author-name">Sarah K.</div>
-                            <div class="author-title">Corporate Case</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="cta">
-            <div class="container">
-                <h2>Ready to Simplify Your Legal Process?</h2>
-                <p>Join thousands who have taken control of their legal matters with Soven Legal.</p>
-                <div class="cta-buttons">
-                    <a href="/signup" class="btn btn-primary btn-large">Get Started for Free</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Soven Legal</h3>
-                    <p>Empowering you to confidently manage any legal case—saving you time, stress, and money.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="/dashboard">Dashboard</a></li>
-                        <li><a href="/lawyers">Find Lawyers</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Legal</h3>
-                    <ul>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact Us</h3>
-                    <ul>
-                        <li><i class="fas fa-envelope"></i> support@sovenlegal.com</li>
-                        <li><i class="fas fa-phone"></i> (555) 123-4567</li>
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Legal Ave, Suite 100<br>San Francisco, CA 94107</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Soven Legal. All rights reserved.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="hero-card-label">Case Progress</div>
+          <div class="hero-card-title">Immigration — H-1B Application</div>
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+          <div class="progress-meta"><span>73% complete</span><span>4 items remaining</span></div>
         </div>
-    </footer>
+        <div class="hero-card">
+          <div class="hero-card-label">Upcoming Deadlines</div>
+          <div class="deadline-list">
+            <div class="deadline-item"><div class="deadline-dot dot-urgent"></div><span style="font-size:0.82rem;color:var(--ink-muted)">Form I-129 Filing</span><span class="deadline-date">Apr 10</span></div>
+            <div class="deadline-item"><div class="deadline-dot dot-soon"></div><span style="font-size:0.82rem;color:var(--ink-muted)">Employer Certification</span><span class="deadline-date">Apr 18</span></div>
+            <div class="deadline-item"><div class="deadline-dot dot-ok"></div><span style="font-size:0.82rem;color:var(--ink-muted)">Supporting Documents</span><span class="deadline-date">Apr 25</span></div>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-label">AI Document Scan</div>
+          <div class="hero-card-title" style="font-size:1rem;color:var(--sage)"><i class="fas fa-check-circle" style="margin-right:8px;color:var(--sage)"></i>3 documents verified complete</div>
+          <div style="font-size:0.78rem;color:#C0392B;margin-top:8px"><i class="fas fa-exclamation-circle" style="margin-right:6px"></i>Missing: Labor Condition Application (LCA)</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script src="/static/js/script.js"></script>
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-num">12,000+</div>
+        <div class="stat-desc">Cases managed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">98%</div>
+        <div class="stat-desc">Deadline accuracy</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">$3.2M</div>
+        <div class="stat-desc">Legal fees saved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4.9 ★</div>
+        <div class="stat-desc">Average rating</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE STRIP -->
+  <div class="image-strip">
+    <div class="strip-img-wrap">
+      <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80&auto=format&fit=crop" alt="Legal consultation">
+      <div class="strip-img-label"><span>Immigration</span>Visa & Residency</div>
+    </div>
+    <div class="strip-img-wrap">
+      <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80&auto=format&fit=crop" alt="Document signing">
+      <div class="strip-img-label"><span>Corporate</span>Business & Contracts</div>
+    </div>
+    <div class="strip-img-wrap">
+      <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80&auto=format&fit=crop" alt="Team meeting">
+      <div class="strip-img-label"><span>Family Law</span>Divorce & Custody</div>
+    </div>
+    <div class="strip-img-wrap">
+      <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80&auto=format&fit=crop" alt="Legal research">
+      <div class="strip-img-label"><span>Litigation</span>Court Representation</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="features-header reveal">
+        <div>
+          <div class="section-label">Platform Capabilities</div>
+          <h2 class="section-title">Everything you need,<br>in one place</h2>
+        </div>
+        <p class="section-subtitle">Purpose-built tools that give you the clarity and confidence to handle your legal case at every stage.</p>
+      </div>
+      <div class="features-grid reveal">
+        <div class="feature-card">
+          <div class="feature-number">01</div>
+          <div class="feature-icon-wrap"><i class="fas fa-file-alt"></i></div>
+          <h3>Document Scanning</h3>
+          <p>Our AI identifies missing documents and checks completeness so you never have to guess what's needed next.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-number">02</div>
+          <div class="feature-icon-wrap"><i class="fas fa-calendar-check"></i></div>
+          <h3>Deadline Tracking</h3>
+          <p>Never miss important dates. Automated reminders sync directly to your calendar with custom alerts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-number">03</div>
+          <div class="feature-icon-wrap"><i class="fas fa-chart-line"></i></div>
+          <h3>Progress Tracking</h3>
+          <p>See exactly how much of your case is complete and what actions remain — expressed as a clear percentage.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-number">04</div>
+          <div class="feature-icon-wrap"><i class="fas fa-gavel"></i></div>
+          <h3>Fair Representation</h3>
+          <p>Connect with specialized lawyers and get fair pricing based on how much work you've already completed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="container">
+      <div class="how-it-works-inner">
+        <div class="how-sticky reveal">
+          <div class="section-label">The Process</div>
+          <h2 class="section-title">From documents to<br>representation</h2>
+          <p class="section-subtitle" style="margin-top:16px;margin-bottom:36px">A structured four-step process designed to put you in control before you ever speak with a lawyer.</p>
+          <a href="/signup" class="btn btn-gold btn-large">Start Your Case</a>
+          <div class="how-image-block" style="margin-top:36px">
+            <img src="https://images.unsplash.com/photo-1593115057322-e94b77572f20?w=700&q=80&auto=format&fit=crop" alt="Legal team at work">
+            <div class="how-image-block-overlay"></div>
+            <div class="how-image-stat">
+              <div class="stat-num" style="font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:400;line-height:1;color:var(--gold-light)">500+</div>
+              <div class="stat-label" style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-top:4px">Vetted lawyers</div>
+            </div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step reveal">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h3>Scan Your Documents</h3>
+              <p>Upload or scan your legal documents. Our AI will analyze them thoroughly and identify exactly what's missing for your specific case type.</p>
+            </div>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h3>Track Deadlines</h3>
+              <p>Receive personalized deadlines for each required document or action, with intelligent reminders that adapt to your schedule.</p>
+            </div>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h3>Monitor Progress</h3>
+              <p>See a clear percentage of how much of your case is complete and what remains to be done — always knowing exactly where you stand.</p>
+            </div>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <h3>Connect with Lawyers</h3>
+              <p>When expert help is needed, connect with vetted lawyers in your area of need. Automated fee negotiation ensures fair pricing for the work that remains.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="testimonials-header reveal">
+        <div>
+          <div class="section-label">Client Stories</div>
+          <h2 class="section-title">What our users say</h2>
+        </div>
+      </div>
+    </div>
+    <!-- Full-bleed image row above cards -->
+    <div class="testimonials-image-row">
+      <div class="testi-img-cell">
+        <img src="https://images.unsplash.com/photo-1573497491208-6b1acb260507?w=700&q=80&auto=format&fit=crop" alt="">
+        <div class="testi-img-cell-overlay"></div>
+      </div>
+      <div class="testi-img-cell">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80&auto=format&fit=crop" alt="">
+        <div class="testi-img-cell-overlay"></div>
+      </div>
+      <div class="testi-img-cell">
+        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=700&q=80&auto=format&fit=crop" alt="">
+        <div class="testi-img-cell-overlay"></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="testimonial-cards">
+        <div class="testimonial-card reveal">
+          <span class="quote-mark">"</span>
+          <div class="testimonial-text">Soven Legal saved me thousands in legal fees by helping me prepare 80% of my immigration case before connecting with a lawyer.</div>
+          <div class="testimonial-divider"></div>
+          <div class="author-name">Maria G.</div>
+          <div class="author-title">Immigration Case</div>
+        </div>
+        <div class="testimonial-card reveal">
+          <span class="quote-mark">"</span>
+          <div class="testimonial-text">The deadline tracking feature prevented me from missing critical court dates during my divorce proceedings. Absolutely invaluable.</div>
+          <div class="testimonial-divider"></div>
+          <div class="author-name">James T.</div>
+          <div class="author-title">Divorce Case</div>
+        </div>
+        <div class="testimonial-card reveal">
+          <span class="quote-mark">"</span>
+          <div class="testimonial-text">As a small business owner, this platform helped me navigate contract disputes without breaking the bank on legal fees.</div>
+          <div class="testimonial-divider"></div>
+          <div class="author-name">Sarah K.</div>
+          <div class="author-title">Corporate Case</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <img class="cta-image" src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80&auto=format&fit=crop" alt="">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <div>
+          <div class="section-label">Get Started</div>
+          <h2>Ready to simplify your legal process?</h2>
+          <p>Join thousands who have taken control of their legal matters with Soven Legal.</p>
+          <div class="trust-badges">
+            <div class="badge"><i class="fas fa-shield-alt"></i> Bank-grade encryption</div>
+            <div class="badge"><i class="fas fa-user-shield"></i> Attorney-client privilege protected</div>
+            <div class="badge"><i class="fas fa-star"></i> Rated 4.9 / 5.0</div>
+          </div>
+        </div>
+        <div class="cta-side">
+          <a href="/signup" class="btn btn-primary btn-large">Get Started Free</a>
+          <a href="/lawyers" class="btn btn-outline btn-large">Find a Lawyer</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="logo"><h1>Soven <span>Legal</span></h1><p>Simplifying your legal journey</p></div>
+        <p>Empowering you to confidently manage any legal case — saving time, stress, and money at every step.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/lawyers">Find Lawyers</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <ul>
+          <li><i class="fas fa-envelope"></i> support@sovenlegal.com</li>
+          <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+          <li><i class="fas fa-map-marker-alt"></i> 123 Legal Ave, Suite 100, San Francisco, CA 94107</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Soven Legal. All rights reserved.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const header=document.getElementById('site-header');
+window.addEventListener('scroll',()=>{header.classList.toggle('scrolled',window.scrollY>20)});
+const reveals=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver((entries)=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){entry.target.style.transitionDelay=`${i*0.06}s`;entry.target.classList.add('visible')}})},{threshold:0.12});
+reveals.forEach(el=>observer.observe(el));
+</script>
 </body>
 </html>

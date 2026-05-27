@@ -1,15 +1,20 @@
 import os
 import json
-from google import genai
+from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
+OPENAI_MODEL = os.getenv('OPENAI_MODEL')
+
 
 class Generate_Documents:
-    def __init__(self, query, api_key=GEMINI_API_KEY):
+    def __init__(self, query, api_key=OPENAI_API_KEY):
         self.query = query
         self.api_key = api_key
+
         self.system_prompt = """
 You are an expert virtual legal advocate assistant.
 Your task is to generate comprehensive document information for solving a legal query.
@@ -36,38 +41,64 @@ Rules:
            "typical_sections": [
              "Section 1",
              "Section 2",
-             "Reference_Link",
+             "Reference_Link"
            ]
          }
        }
      ]
    }
+
 3. Focus on Indian legal documents and requirements.
 4. Be specific about what elements must be present in each document.
 5. Provide clear visual references to help identify authentic documents.
-6.Provide a visual reference link via image link or any direct navigation link available on the internet as a part of typical_sections itself
+6. Provide a visual reference link via image link or any direct navigation link available on the internet as a part of typical_sections itself.
 """
-
 
     def call_api(self):
         try:
-            client = genai.Client(api_key=self.api_key)
-            full_prompt = f"{self.system_prompt}\n\nUser Query: {self.query}"
-            resp = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=[full_prompt]
+
+            client = OpenAI(
+                api_key=self.api_key,
+                base_url=OPENAI_BASE_URL
             )
-            
-            response = resp.text.strip()
+
+            full_prompt = (
+                f"{self.system_prompt}\n\n"
+                f"User Query: {self.query}"
+            )
+
+            resp = client.chat.completions.create(
+                model=OPENAI_MODEL,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": full_prompt
+                    }
+                ],
+                temperature=0.3
+            )
+
+            response = resp.choices[0].message.content.strip()
+
             start = response.find("{")
             end = response.rfind("}") + 1
+
             output = response[start:end]
 
             try:
                 data = json.loads(output)
                 return data
+
             except json.JSONDecodeError:
-                return {"documents": ["Error: Could not generate documents properly."]}
-                
+                return {
+                    "documents": [
+                        "Error: Could not generate documents properly."
+                    ]
+                }
+
         except Exception as e:
-            return {"documents": [f"API call failed: {str(e)}"]}
+            return {
+                "documents": [
+                    f"API call failed: {str(e)}"
+                ]
+            }

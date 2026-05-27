@@ -1,1328 +1,497 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Case Details - Soven Legal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2f4050;
-            --primary-dark: #283848;
-            --accent: #3b82f6;
-            --accent-dark: #2563eb;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --light: #f9fafc;
-            --gray-light: #eaeaea;
-            --gray: #d1d5db;
-            --text: #333;
-            --text-light: #6b7280;
-            --white: #ffffff;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
-            --transition: all 0.3s ease;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Hired Lawyers - Soven Legal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --cream: #F8F5F0;
+      --warm-white: #FDFCFA;
+      --ink: #1A1814;
+      --ink-muted: #4A4640;
+      --ink-light: #8A8480;
+      --gold: #B8922A;
+      --gold-light: #D4A843;
+      --gold-pale: #F5EDD8;
+      --sage: #4A5E52;
+      --sage-light: #EEF2EF;
+      --border: #E4DDD4;
+      --border-dark: #C8BFB4;
+      --danger: #C0392B;
+      --danger-light: #fdf0ee;
+      --sidebar-w: 260px;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      min-height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      background: var(--cream);
+      color: var(--ink);
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            background: var(--light);
-            color: var(--text);
-            line-height: 1.6;
-        }
+    /* ── NOTIFICATIONS ── */
+    #notification-container {
+      position: fixed; top: 24px; right: 24px;
+      z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+      pointer-events: none;
+    }
+    .notif {
+      pointer-events: all;
+      display: flex; align-items: flex-start; gap: 12px;
+      min-width: 320px; max-width: 400px;
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 6px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 32px rgba(26,24,20,0.12);
+      animation: notifIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+      position: relative; overflow: hidden;
+    }
+    .notif.success { border-left-color: var(--sage); }
+    .notif.warning { border-left-color: var(--gold); }
+    .notif.error   { border-left-color: var(--danger); }
+    .notif.info    { border-left-color: #2980b9; }
+    .notif-icon {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 0.76rem;
+    }
+    .notif.success .notif-icon { background: var(--sage-light); color: var(--sage); }
+    .notif.warning .notif-icon { background: var(--gold-pale);  color: var(--gold); }
+    .notif.error   .notif-icon { background: var(--danger-light); color: var(--danger); }
+    .notif.info    .notif-icon { background: #eaf3fb; color: #2980b9; }
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-title { font-size: 0.8rem; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+    .notif-msg   { font-size: 0.78rem; color: var(--ink-muted); font-weight: 300; line-height: 1.5; }
+    .notif-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--ink-light); font-size: 0.7rem; padding: 2px;
+      transition: color 0.2s; flex-shrink: 0;
+    }
+    .notif-close:hover { color: var(--ink); }
+    .notif-progress {
+      position: absolute; bottom: 0; left: 0; height: 2px;
+      background: currentColor; opacity: 0.22;
+      animation: notifBar 4s linear forwards;
+    }
+    @keyframes notifIn  { from { opacity:0; transform: translateX(20px) scale(0.97); } to { opacity:1; transform: translateX(0) scale(1); } }
+    @keyframes notifOut { to   { opacity:0; transform: translateX(20px); max-height:0; padding:0; margin:0; } }
+    @keyframes notifBar { from { width:100%; } to { width:0; } }
 
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            margin-left: 280px;
-            transition: var(--transition);
-        }
-
-        /* Header */
-        header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        .back-btn {
-            background: var(--white);
-            color: var(--primary);
-            border: 1px solid var(--gray);
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-right: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .back-btn:hover {
-            background: var(--light);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        /* Case Overview */
-        .case-overview {
-            background: var(--white);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-
-        .case-overview:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .case-overview h2 {
-            font-size: 24px;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .overview-stats {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            background: var(--light);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            min-width: 150px;
-            transition: var(--transition);
-            flex: 1;
-        }
-
-        .stat:hover {
-            background: #edf2ff;
-            transform: translateY(-3px);
-        }
-
-        .stat-value {
-            display: block;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        /* Section Styling */
-        section {
-            background: var(--white);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-
-        section:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        section h3 {
-            font-size: 20px;
-            color: var(--primary);
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        /* Milestones Timeline */
-        .milestones-timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .milestones-timeline::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--gray-light);
-        }
-
-        .milestone-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .milestone-icon {
-            position: absolute;
-            left: -30px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-        }
-
-        .milestone-item.status-completed .milestone-icon {
-            color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .milestone-item.status-in_progress .milestone-icon {
-            color: var(--accent);
-            background: rgba(59, 130, 246, 0.1);
-            animation: pulse 2s infinite;
-        }
-
-        .milestone-item.status-pending .milestone-icon {
-            color: var(--text-light);
-            background: rgba(209, 213, 219, 0.3);
-        }
-
-        .milestone-content {
-            flex: 1;
-            margin-left: 20px;
-        }
-
-        .milestone-content h4 {
-            font-size: 18px;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .milestone-content p {
-            color: var(--text-light);
-            margin-bottom: 10px;
-        }
-
-        .milestone-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .milestone-meta .notes {
-            color: var(--accent);
-            font-style: italic;
-        }
-
-        .milestone-percentage {
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--accent);
-            min-width: 50px;
-            text-align: right;
-        }
-
- 
-        .verification-actions {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary, .btn-secondary {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--white);
-            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--white);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(59, 130, 246, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .verification-result {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .verification-success {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 4px solid var(--success);
-            padding: 15px;
-        }
-
-        .verification-error {
-            background: rgba(239, 68, 68, 0.1);
-            border-left: 4px solid var(--danger);
-            padding: 15px;
-        }
-
-        
-
-        .documents-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .document-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: var(--light);
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-
-        .document-item:hover {
-            background: #edf2ff;
-            transform: translateX(3px);
-        }
-
-        .document-item i {
-            color: var(--danger);
-            font-size: 20px;
-            margin-right: 15px;
-        }
-
-        .doc-name {
-            flex: 1;
-            font-weight: 500;
-        }
-
-        /* Animations */
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @media (max-width: 992px) {
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
-            
-            .overview-stats {
-                flex-direction: column;
-            }
-            
-            .verification-actions {
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .back-btn {
-                margin-right: 0;
-            }
-            
-            .milestone-item {
-                flex-direction: column;
-            }
-            
-            .milestone-percentage {
-                align-self: flex-end;
-                margin-top: 10px;
-            }
-            
-            .milestone-meta {
-                flex-direction: column;
-                gap: 5px;
-            }
-        }
-  
-.sidebar {
-    width: 280px;
-    background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
-    color: var(--white);
-    height: 100vh;
-    padding: 0;
-    position: fixed;
-    box-shadow: var(--shadow);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    transition: var(--transition);
-}
-
-.logo-container {
-    padding: 25px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logo {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--white);
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 20px 15px;
-    flex: 1;
-}
-
-.sidebar ul li {
-    margin: 8px 0;
-    border-radius: 8px;
-    transition: var(--transition);
-}
-
-.sidebar ul li:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.sidebar ul li a {
-    text-decoration: none;
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    font-size: 16px;
-    border-radius: 8px;
-    transition: var(--transition);
-}
-
-.sidebar ul li a.active {
-    background: rgba(59, 130, 246, 0.2);
-}
-
-.sidebar ul li a i {
-    margin-right: 12px;
-    font-size: 18px;
-    width: 24px;
-    text-align: center;
-}
-
-.sidebar ul li a:hover {
-    background: rgba(59, 130, 246, 0.15);
-}
-
-.sidebar-footer {
-    padding: 15px 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-
-@media (max-width: 992px) {
+    /* ── SIDEBAR ── */
     .sidebar {
-        width: 80px;
-        padding: 20px 0;
+      position: fixed; top: 0; left: 0;
+      width: var(--sidebar-w); height: 100vh;
+      background: var(--ink);
+      display: flex; flex-direction: column;
+      z-index: 200;
+      transition: transform 0.3s ease;
     }
-    
-    .logo {
-        font-size: 16px;
+    .sidebar-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=60&auto=format&fit=crop');
+      background-size: cover; background-position: center;
+      opacity: 0.06; pointer-events: none;
     }
-    
     .logo-container {
-        padding: 20px 10px;
+      padding: 28px 24px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: relative; flex-shrink: 0;
     }
-    
-    .sidebar ul li a span {
-        display: none;
+    .logo-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 500; color: white; line-height: 1; }
+    .logo-name span { color: var(--gold-light); }
+    .logo-sub { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 6px; }
+    .sidebar nav { flex: 1; padding: 14px 0; overflow-y: auto; position: relative; }
+    .sidebar ul { list-style: none; }
+    .sidebar ul li { margin: 2px 12px; }
+    .sidebar ul li a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 6px;
+      text-decoration: none; font-size: 0.82rem; font-weight: 300;
+      color: rgba(255,255,255,0.48); transition: all 0.2s;
     }
-    
-    .sidebar ul li a i {
-        margin-right: 0;
-        font-size: 20px;
+    .sidebar ul li a:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+    .sidebar ul li a.active { color: white; background: rgba(184,146,42,0.16); border: 1px solid rgba(184,146,42,0.22); }
+    .sidebar ul li a.active i { color: var(--gold-light); }
+    .sidebar ul li a i { font-size: 0.82rem; width: 16px; text-align: center; color: rgba(255,255,255,0.28); transition: color 0.2s; }
+    .sidebar ul li a:hover i { color: rgba(255,255,255,0.55); }
+    .nav-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 20px; }
+    .upload-wrap { padding: 14px 16px; }
+    .btn-upload {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 12px;
+      background: var(--gold); color: white; border: none; border-radius: 6px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.74rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; text-decoration: none;
+      transition: background 0.2s;
     }
-    
-    .sidebar-footer {
-        display: none;
-    }
-    
-    .main-content {
-        margin-left: 80px;
-        padding: 20px;
-    }
-}
+    .btn-upload:hover { background: #9A7A22; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; position: relative; }
+    .sidebar-footer p { font-size: 0.7rem; color: rgba(255,255,255,0.2); }
 
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-        width: 280px;
+    /* ── MAIN ── */
+    .main-content { margin-left: var(--sidebar-w); min-height: 100vh; }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(253,252,250,0.93); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px; height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    
-    .sidebar.active {
-        transform: translateX(0);
-    }
-    
-    .main-content {
-        margin-left: 0;
-        padding: 15px;
-    }
-    
+    .header-left { display: flex; align-items: center; gap: 16px; }
     .menu-toggle {
-        display: block;
+      background: none; border: 1px solid var(--border); border-radius: 4px;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--ink-muted); font-size: 0.85rem; transition: all 0.2s;
     }
-}
-
-.strategy-section {
-    background: var(--white);
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-    border-left: 4px solid var(--accent);
-}
-
-.strategy-section:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-}
-
-.strategy-section h3 {
-    font-size: 20px;
-    color: var(--primary);
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--gray-light);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.strategy-section h3::before {
-    content: '📋';
-    font-size: 24px;
-}
-
-.strategy-box {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    padding: 25px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-}
-
-.strategy-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-}
-
-.strategy-box p {
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--text);
-    margin: 0;
-    font-style: normal;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
-.strategy-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
-
-.strategy-actions .btn-primary {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-    color: var(--white);
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
-}
-
-
-
-.strategy-actions .btn-secondary {
-    background: var(--white);
-    color: var(--accent);
-    border: 2px solid var(--accent);
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.strategy-actions .btn-secondary:hover {
-    background: rgba(59, 130, 246, 0.1);
-    transform: translateY(-2px);
-}
-
-
-.strategy-section > p {
-    font-style: italic;
-    color: var(--text-light);
-    text-align: center;
-    padding: 40px 20px;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-radius: 10px;
-    border: 2px dashed #cbd5e0;
-}
-
-.verification-result {
-    margin-top: 20px;
-    animation: fadeIn 0.5s ease-in;
-}
-
-.verification-success {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-    border-left: 4px solid var(--success);
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 15px;
-}
-
-.verification-success h4 {
-    color: var(--success);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.verification-error {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-    border-left: 4px solid var(--danger);
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 15px;
-}
-
-.verification-error h4 {
-    color: var(--danger);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-@media (max-width: 768px) {
-    .strategy-section {
-        padding: 20px;
-        margin-left: 0;
+    .menu-toggle:hover { border-color: var(--ink); color: var(--ink); }
+    .header-title { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 400; color: var(--ink); }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-name { font-size: 0.84rem; color: var(--ink-muted); font-weight: 300; }
+    .avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--ink); color: var(--gold-light);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500;
+      border: 2px solid var(--gold); cursor: pointer;
     }
-    
-    .strategy-box {
-        padding: 20px;
+
+    /* ── CONTENT ── */
+    .content-area { padding: 36px 40px; display: flex; flex-direction: column; gap: 28px; }
+
+    /* ── SECTION CARD ── */
+    .section-card { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px; border-bottom: 1px solid var(--border);
     }
-    
-    .strategy-actions {
-        flex-direction: column;
+    .section-head-left { display: flex; align-items: center; gap: 10px; }
+    .section-label-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+    .section-head h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 500; color: var(--ink); }
+
+    /* ── BUTTONS ── */
+    .btn-sm {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 16px; border-radius: 4px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+      font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase;
+      white-space: nowrap; border: 1px solid transparent; transition: all 0.2s;
     }
-    
-    .strategy-actions .btn-primary,
-    .strategy-actions .btn-secondary {
-        width: 100%;
-        justify-content: center;
+    .btn-sm i { font-size: 0.72rem; }
+    .btn-gold   { background: var(--gold); color: white; border-color: var(--gold); }
+    .btn-gold:hover { background: #9A7A22; border-color: #9A7A22; }
+    .btn-outline { background: transparent; color: var(--ink-muted); border-color: var(--border); }
+    .btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+    .btn-sage   { background: var(--sage); color: white; border-color: var(--sage); }
+    .btn-sage:hover { background: #3A4E42; border-color: #3A4E42; }
+    .btn-warn   { background: #D4821A; color: white; border-color: #D4821A; }
+    .btn-warn:hover { background: #B86E14; border-color: #B86E14; }
+
+    /* ── LAWYERS GRID ── */
+    .lawyers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+      padding: 24px;
     }
-    
-    .verification-success,
-    .verification-error,
-    .suggestions {
-        padding: 15px;
+
+    /* ── LAWYER CARD ── */
+    .lawyer-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px;
+      display: flex; flex-direction: column; gap: 16px;
+      transition: box-shadow 0.2s, transform 0.2s;
     }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    .lawyer-card:hover {
+      box-shadow: 0 8px 28px rgba(26,24,20,0.09);
+      transform: translateY(-3px);
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .lawyer-header { display: flex; align-items: center; gap: 14px; }
+    .lawyer-avatar {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: var(--ink); color: var(--gold-light);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 500;
+      border: 2px solid var(--gold); flex-shrink: 0;
     }
-}
-
-
-.btn-primary.loading,
-.btn-secondary.loading {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-primary.loading::after,
-.btn-secondary.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    to {
-        left: 100%;
+    .lawyer-info h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; font-weight: 500; color: var(--ink); margin-bottom: 6px;
     }
-}
+    .spec-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .spec-tag {
+      background: var(--gold-pale); color: var(--gold);
+      padding: 3px 9px; border-radius: 3px;
+      font-size: 0.68rem; font-weight: 400; letter-spacing: 0.05em;
+      border: 1px solid rgba(184,146,42,0.2);
+    }
 
-.verification-success {
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    color: #155724;
-}
+    /* ── PROGRESS ── */
+    .progress-section {
+      background: var(--cream); border: 1px solid var(--border);
+      border-radius: 6px; padding: 12px 14px;
+    }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .progress-label span { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); }
+    .progress-label strong { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--ink); font-weight: 500; }
+    .progress-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--sage), #6A8E78);
+      border-radius: 3px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
 
-.verification-error {
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    color: #721c24;
-}
+    /* ── CASE DETAILS ── */
+    .case-details { display: flex; flex-direction: column; gap: 7px; }
+    .case-detail-row {
+      display: flex; gap: 8px; font-size: 0.82rem; align-items: baseline;
+    }
+    .case-detail-row strong {
+      color: var(--ink-light); font-weight: 400;
+      font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+      min-width: 52px; flex-shrink: 0;
+    }
+    .case-detail-row span { color: var(--ink); font-weight: 300; }
 
-.verification-success h4,
-.verification-error h4 {
-    margin-top: 0;
-    font-size: 1.1em;
-    font-weight: bold;
-}
+    .status-badge {
+      display: inline-block; font-size: 0.7rem; padding: 2px 9px;
+      border-radius: 3px; font-weight: 400;
+    }
+    .status-active    { background: var(--sage-light); color: var(--sage); }
+    .status-pending   { background: var(--gold-pale); color: var(--gold); }
+    .status-completed { background: var(--sage-light); color: var(--sage); }
+    .status-cancelled { background: var(--danger-light); color: var(--danger); }
 
-.verification-success h5 {
-    color: #0c5460;
-    margin-top: 15px;
-    margin-bottom: 8px;
-    font-size: 1em;
-}
+    /* ── ACTION BUTTONS ── */
+    .action-buttons {
+      display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap;
+    }
+    .action-buttons .btn-sm { flex: 1; min-width: 100px; justify-content: center; }
 
-.verification-success ul {
-    margin: 8px 0 15px 20px;
-    padding: 0;
-}
+    /* ── DIVIDER ── */
+    .card-divider { height: 1px; background: var(--border); }
 
-.verification-success li {
-    margin-bottom: 5px;
-    line-height: 1.4;
-}
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center; padding: 56px 20px;
+      border: 1.5px dashed var(--border-dark); border-radius: 8px;
+      background: var(--cream);
+    }
+    .empty-state i { font-size: 2.5rem; color: var(--ink-light); margin-bottom: 16px; display: block; }
+    .empty-state h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 400; color: var(--ink); margin-bottom: 8px;
+    }
+    .empty-state p { font-size: 0.84rem; color: var(--ink-light); margin-bottom: 20px; }
 
-.verification-success p {
-    margin-bottom: 10px;
-    line-height: 1.5;
-}
-
-.verification-loading {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    text-align: center;
-    color: #6c757d;
-}
-
-.verification-success {
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    color: #155724;
-}
-
-.verification-error {
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    color: #721c24;
-}
-
-.verification-success h4,
-.verification-error h4,
-.verification-loading h4 {
-    margin-top: 0;
-    font-size: 1.1em;
-    font-weight: bold;
-}
-
-.verification-success h5 {
-    color: #0c5460;
-    margin-top: 15px;
-    margin-bottom: 8px;
-    font-size: 1em;
-}
-
-.verification-success ul {
-    margin: 8px 0 15px 20px;
-    padding: 0;
-}
-
-.verification-success li {
-    margin-bottom: 5px;
-    line-height: 1.4;
-}
-
-.verification-actions {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #c3e6cb;
-}
-
-.verification-actions button {
-    margin-right: 10px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    color: white;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    color: white;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-    opacity: 0.9;
-}
-
-/* History Styling */
-.verification-history {
-    background-color: #e2e3e5;
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 15px;
-}
-
-.history-item {
-    background-color: white;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 10px;
-}
-
-.history-item.current {
-    border-color: #28a745;
-    background-color: #f8fff9;
-}
-
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.badge {
-    background-color: #28a745;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.verification-info {
-    background-color: #e7f1ff;
-    border: 1px solid #b8daff;
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 15px;
-    color: #004085;
-}
-    </style>
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { transform: translateX(-260px); width: 260px; }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; }
+      header { padding: 0 20px; }
+      .content-area { padding: 24px 20px; }
+      .lawyers-grid { padding: 16px; }
+    }
+    @media (max-width: 600px) {
+      .lawyers-grid { grid-template-columns: 1fr; }
+      .action-buttons { flex-direction: column; }
+      .action-buttons .btn-sm { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-     <div class="sidebar">
-        <div class="logo-container">
-            <h2 class="logo">Akaash Pandya</h2>
-        </div>
-        <ul>
-            <li><a href="/dashboard" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-            <li><a href="/documents"><i class="fas fa-file-alt"></i> <span>Documents</span></a></li>
-            <li><a href="/hired-lawyers"><i class="fas fa-user-tie"></i> <span>My Lawyers</span></a></li>
-            <li><a href="/lawyers"><i class="fas fa-user-tie"></i> <span>Find Lawyers</span></a></li>
-            <li><a href="/chat-interface"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
-            <li><a href="/legal-aid"><i class="fas fa-hands-helping"></i> <span>Legal Help</span></a></li>
-            <li><a href="/upload-case-file" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Case File</a></li>
 
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2025 Soven Legal</p>
-        </div>
+<div id="notification-container"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-bg"></div>
+  <div class="logo-container">
+    <div class="logo-name">Soven <span>Legal</span></div>
+    <div class="logo-sub">Simplifying your legal journey</div>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="/dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+      <li><a href="/documents"><i class="fas fa-file-alt"></i><span>Documents</span></a></li>
+      <div class="nav-divider"></div>
+      <li><a href="/hired-lawyers" class="active"><i class="fas fa-user-tie"></i><span>My Lawyers</span></a></li>
+      <li><a href="/lawyers"><i class="fas fa-search"></i><span>Find Lawyers</span></a></li>
+      <div class="nav-divider"></div>
+      <li><a href="/chat-interface"><i class="fas fa-comments"></i><span>Messages</span></a></li>
+      <li><a href="/legal-aid"><i class="fas fa-hands-helping"></i><span>Legal Help</span></a></li>
+    </ul>
+    <div class="upload-wrap">
+      <a href="/upload-case-file" class="btn-upload"><i class="fas fa-upload"></i> Upload Case File</a>
     </div>
-    
-    <div class="main-content">
-        <header>
-            <button class="back-btn" onclick="window.history.back()">
-                <i class="fas fa-arrow-left"></i> Back
+  </nav>
+  <div class="sidebar-footer"><p>&copy; 2025 Soven Legal</p></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <h1 class="header-title">My Hired Lawyers</h1>
+    </div>
+    <div class="user-info">
+      <span class="user-name">{{ user.name }}</span>
+      <div class="avatar">{{ user.initials }}</div>
+    </div>
+  </header>
+
+  <div class="content-area">
+
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-label-dot"></div>
+          <h2>Your Legal Team</h2>
+        </div>
+        <button class="btn-sm btn-gold" onclick="hireNewLawyer()">
+          <i class="fas fa-plus"></i> Hire New Lawyer
+        </button>
+      </div>
+
+      <div class="lawyers-grid" id="lawyersGrid">
+
+        {% if not hired_lawyers %}
+        <div class="empty-state">
+          <i class="fas fa-user-tie"></i>
+          <h3>No lawyers hired yet</h3>
+          <p>Browse our network of verified legal professionals to get started.</p>
+          <button class="btn-sm btn-gold" onclick="window.location.href='/lawyers'">
+            <i class="fas fa-search"></i> Browse Lawyers
+          </button>
+        </div>
+        {% endif %}
+
+        {% for hired in hired_lawyers %}
+        <div class="lawyer-card" data-id="{{ hired._id }}">
+
+          <div class="lawyer-header">
+            <div class="lawyer-avatar">{{ hired.lawyer_info.name[0]|upper }}</div>
+            <div class="lawyer-info">
+              <h3>{{ hired.lawyer_info.name }}</h3>
+              <div class="spec-tags">
+                {% for spec in hired.lawyer_info.specialization %}
+                <span class="spec-tag">{{ spec }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-divider"></div>
+
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>Case Progress</span>
+              <strong>{{ hired.progress }}%</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: {{ hired.progress }}%"></div>
+            </div>
+          </div>
+
+          <div class="case-details">
+            <div class="case-detail-row">
+              <strong>Case</strong>
+              <span>{{ hired.case_title }}</span>
+            </div>
+            <div class="case-detail-row">
+              <strong>Hired</strong>
+              <span>{{ hired.hired_date.strftime('%b %d, %Y') }}</span>
+            </div>
+            <div class="case-detail-row">
+              <strong>Status</strong>
+              <span class="status-badge status-{{ hired.status }}">{{ hired.status|title }}</span>
+            </div>
+            <div class="case-detail-row">
+              <strong>Fee</strong>
+              <span>₹{{ hired.agreed_fee }}</span>
+            </div>
+          </div>
+
+          <div class="card-divider"></div>
+
+          <div class="action-buttons">
+            <button class="btn-sm btn-outline" onclick="viewDetails('{{ hired._id }}')">
+              <i class="fas fa-eye"></i> Details
             </button>
-            <h1>Case Details</h1>
-        </header>
-
-        <div class="case-details-container">
-            <!-- Case Overview -->
-            <section class="case-overview">
-                <h2>{{ hired_lawyer.case_title }}</h2>
-                <div class="overview-stats">
-                    <div class="stat">
-                        <span class="stat-value">{{ hired_lawyer.progress }}%</span>
-                        <span class="stat-label">Overall Progress</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value">{{ milestones|length }}</span>
-                        <span class="stat-label">Total Milestones</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value">{{ completed_milestones }}</span>
-                        <span class="stat-label">Completed</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Progress Timeline -->
-            <section class="milestones-section">
-                <h3>Case Milestones</h3>
-                <div class="milestones-timeline">
-                    {% for milestone in milestones %}
-                    <div class="milestone-item status-{{ milestone.status }}">
-                        <div class="milestone-icon">
-                            {% if milestone.status == 'completed' %}
-                            <i class="fas fa-check-circle"></i>
-                            {% elif milestone.status == 'in_progress' %}
-                            <i class="fas fa-spinner"></i>
-                            {% else %}
-                            <i class="fas fa-circle"></i>
-                            {% endif %}
-                        </div>
-                        <div class="milestone-content">
-                            <h4>{{ milestone.milestone_name }}</h4>
-                            <p>{{ milestone.description }}</p>
-                            <div class="milestone-meta">
-                                <span>Due: {{ milestone.due_date.strftime('%b %d, %Y') }}</span>
-                                {% if milestone.lawyer_notes %}
-                                <span class="notes">Notes: {{ milestone.lawyer_notes }}</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="milestone-percentage">
-                            {{ milestone.percentage_value }}%
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <!-- Strategy Section -->
-<section class="strategy-section">
-    <h3>Case Strategy</h3>
-    {% if hired_lawyer.strategy %}
-        <div class="strategy-box">
-            <p>{{ hired_lawyer.strategy }}</p>
-        </div>
-        <div class="strategy-actions">
-            <button class="btn-primary" onclick="verifyStrategy()">
-                <i class="fas fa-shield-alt"></i> Verify Strategy with AI
+            <button class="btn-sm btn-sage" onclick="messageLawyer('{{ hired.lawyer_id }}')">
+              <i class="fas fa-message"></i> Message
             </button>
-           
-        </div>
-        <div class="verification-result" id="verificationResult"></div>
-    {% else %}
-        <p><em>No strategy has been added by the lawyer yet.</em></p>
-    {% endif %}
-</section>
+            <button class="btn-sm btn-warn" onclick="verifyProgress('{{ hired._id }}')">
+              <i class="fas fa-shield-alt"></i> Verify
+            </button>
+          </div>
 
-
-           
         </div>
+        {% endfor %}
+
+      </div>
     </div>
 
-    <script>
-        function verifyCaseProgress() {
-            fetch(`/api/verify-case-progress/{{ hired_lawyer._id }}`)
-                .then(response => response.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('verificationResult');
-                    if (data.success) {
-                        resultDiv.innerHTML = `
-    <div class="verification-success">
-        <h4>✅ Strategy Verification Complete</h4>
-        <p>AI Analysis: {data?.ai_feedback?.analysis || "No analysis available"}</p>
-        ${deadlinesHtml}
-    </div>
-`;
+  </div>
+</div>
 
-                    } else {
-                        resultDiv.innerHTML = `
-                            <div class="verification-error">
-                                <h4>❌ Verification Failed</h4>
-                                <p>${data.message}</p>
-                            </div>
-                        `;
-                    }
-                });
-        }
+<script>
+  /* Sidebar toggle */
+  document.getElementById('menuToggle').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
 
-        function verifyDocument(docId) {
-            fetch(`/api/verify-document/${docId}?case_id={{ hired_lawyer._id }}`)
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                });
-        }
+  /* Notification */
+  function showNotification(msg, type, title) {
+    type = type || 'info';
+    var icons  = { success:'fa-check', warning:'fa-exclamation', error:'fa-times', info:'fa-info' };
+    var labels = { success:'Success', warning:'Heads up', error:'Error', info:'Info' };
+    var c = document.getElementById('notification-container');
+    var el = document.createElement('div');
+    el.className = 'notif ' + type;
+    el.innerHTML =
+      '<div class="notif-icon"><i class="fas ' + (icons[type]||'fa-info') + '"></i></div>' +
+      '<div class="notif-body">' +
+        '<div class="notif-title">' + (title || labels[type]) + '</div>' +
+        '<div class="notif-msg">' + msg + '</div>' +
+      '</div>' +
+      '<button class="notif-close" onclick="dismissNotif(this.parentElement)"><i class="fas fa-times"></i></button>' +
+      '<div class="notif-progress"></div>';
+    c.appendChild(el);
+    setTimeout(function() { dismissNotif(el); }, 4200);
+  }
+  function dismissNotif(el) {
+    if (!el || !el.parentElement) return;
+    el.style.animation = 'notifOut 0.3s ease forwards';
+    setTimeout(function() { if (el.parentElement) el.remove(); }, 300);
+  }
 
-        
-        function verifyStrategy(forceRefresh = false) {
-   const resultDiv = document.getElementById('verificationResult');
-   
-   // Show loading
-   resultDiv.innerHTML = `
-       <div class="verification-loading">
-           <h4><i class="fas fa-cog fa-spin"></i> ${forceRefresh ? 'Getting Fresh Analysis...' : 'Analyzing Strategy...'}</h4>
-           <p>Please wait while AI ${forceRefresh ? 'generates a new' : 'verifies your case'} strategy analysis.</p>
-       </div>
-   `;
-
-   const url = forceRefresh 
-       ? `/api/verify-strategy/{{ hired_lawyer._id }}?force=true`
-       : `/api/verify-strategy/{{ hired_lawyer._id }}`;
-
-   fetch(url)
-       .then(response => response.json())
-       .then(data => {
-           if (data.success) {
-               const analysis = data.analysis || "No analysis available";
-               const fromCache = data.from_cache || false;
-               const verifiedAt = data.verified_at || "Just now";
-               
-               // Cache indicator with better styling and logic
-               const cacheIndicator = fromCache ? 
-                   `<div class="cache-indicator cache-cached">
-                       <i class="fas fa-database"></i> Using cached result from ${verifiedAt}
-                   </div>` :
-                   `<div class="cache-indicator cache-fresh">
-                       <i class="fas fa-sparkles"></i> Fresh analysis generated at ${verifiedAt}
-                   </div>`;
-               
-               let deadlinesHtml = "";
-               const deadlines = data.deadlines || [];
-               if (deadlines.length > 0) {
-                   deadlinesHtml = `
-                       <div style="margin-top: 1.5rem;">
-                           <h5><i class="fas fa-calendar-alt"></i> Suggested Deadlines</h5>
-                           <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                               ${deadlines.map(d => `<li><strong>${d.task}</strong> - Due: ${d.due_date}</li>`).join("")}
-                           </ul>
-                       </div>
-                   `;
-               }
-
-               let detailsHtml = "";
-               const strengths = data.strengths || [];
-               const weaknesses = data.weaknesses || [];
-               const improvements = data.improvements || [];
-               
-               if (strengths.length > 0) {
-                   detailsHtml += `
-                       <div style="margin-top: 1.5rem;">
-                           <h5><i class="fas fa-thumbs-up"></i> Strengths</h5>
-                           <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                               ${strengths.map(s => `<li>${s}</li>`).join("")}
-                           </ul>
-                       </div>
-                   `;
-               }
-               
-               if (weaknesses.length > 0) {
-                   detailsHtml += `
-                       <div style="margin-top: 1.5rem;">
-                           <h5><i class="fas fa-exclamation-triangle"></i> Areas for Improvement</h5>
-                           <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                               ${weaknesses.map(w => `<li>${w}</li>`).join("")}
-                           </ul>
-                       </div>
-                   `;
-               }
-               
-               if (improvements.length > 0) {
-                   detailsHtml += `
-                       <div style="margin-top: 1.5rem;">
-                           <h5><i class="fas fa-lightbulb"></i> Suggested Improvements</h5>
-                           <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                               ${improvements.map(i => `<li>${i}</li>`).join("")}
-                           </ul>
-                       </div>
-                   `;
-               }
-
-               resultDiv.innerHTML = `
-                   <div class="verification-success">
-                       <h4><i class="fas fa-check-circle"></i> Strategy Verification Complete</h4>
-                       ${cacheIndicator}
-                       <div style="margin-top: 1rem;">
-                           <p><strong>AI Analysis:</strong> ${analysis}</p>
-                       </div>
-                       ${detailsHtml}
-                       ${deadlinesHtml}
-                       <div class="verification-actions" style="margin-top: 1.5rem;">
-                           <button class="btn-secondary" onclick="viewVerificationHistory()">
-                               <i class="fas fa-history"></i> View History
-                           </button>
-                           ${fromCache ? 
-                               `<button class="btn-primary" onclick="verifyStrategy(true)">
-                                   <i class="fas fa-sync-alt"></i> Get Fresh Analysis
-                               </button>` : 
-                               `<button class="btn-secondary" onclick="verifyStrategy(true)" style="opacity: 0.7;">
-                                   <i class="fas fa-sync-alt"></i> Force Refresh
-                               </button>`
-                           }
-                       </div>
-                   </div>
-               `;
-           } else {
-               resultDiv.innerHTML = `
-                   <div class="verification-error">
-                       <h4><i class="fas fa-times-circle"></i> Strategy Verification Failed</h4>
-                       <p>${data.message}</p>
-                       <button class="btn-primary" onclick="verifyStrategy(${forceRefresh})" style="margin-top: 1rem;">
-                           <i class="fas fa-redo"></i> Try Again
-                       </button>
-                   </div>
-               `;
-           }
-       })
-       .catch(error => {
-           resultDiv.innerHTML = `
-               <div class="verification-error">
-                   <h4><i class="fas fa-exclamation-triangle"></i> Network Error</h4>
-                   <p>Failed to connect to server: ${error.message}</p>
-                   <button class="btn-primary" onclick="verifyStrategy(${forceRefresh})" style="margin-top: 1rem;">
-                       <i class="fas fa-redo"></i> Retry
-                   </button>
-               </div>
-           `;
-       });
-}
-
-function forceRefresh() {
-    const resultDiv = document.getElementById('verificationResult');
-    resultDiv.innerHTML = `
-        <div class="verification-loading">
-            <h4>🔄 Getting Fresh Analysis...</h4>
-        </div>
-    `;
-    
-    fetch(`/api/verify-strategy/{{ hired_lawyer.case_id }}`)
-        .then(response => response.json())
-        .then(data => {
-            // Reuse the same display logic
-            verifyStrategy();
-        });
-}
-
-function viewVerificationHistory() {
-    fetch(`/api/verification-history/{{ hired_lawyer._id }}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.verifications.length > 0) {
-                let historyHtml = `
-                    <div class="verification-history">
-                        <h4>📊 Verification History</h4>
-                        <p>Past ${data.verifications.length} verification(s):</p>
-                `;
-                
-                data.verifications.forEach((v, index) => {
-                    const isLatest = index === 0;
-                    historyHtml += `
-                        <div class="history-item ${isLatest ? 'current' : ''}">
-                            <div class="history-header">
-                                <strong>${v.verified_at}</strong>
-                                ${isLatest ? '<span class="badge">Latest</span>' : ''}
-                            </div>
-                            <p>${v.analysis_preview}</p>
-                            <small>Strengths: ${v.strengths?.length || 0}, Weaknesses: ${v.weaknesses?.length || 0}</small>
-                        </div>
-                    `;
-                });
-                
-                historyHtml += `</div>`;
-                
-                // Append to current results
-                document.getElementById('verificationResult').innerHTML += historyHtml;
-            } else {
-                document.getElementById('verificationResult').innerHTML += `
-                    <div class="verification-info">
-                        <p>📝 No previous verifications found for this case.</p>
-                    </div>
-                `;
-            }
-        })
-        .catch(error => {
-            console.error('History fetch error:', error);
-        });
-}
-document.addEventListener("DOMContentLoaded", () => {
-    fetch(`/api/latest-verification/{{ hired_lawyer._id }}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const resultDiv = document.getElementById('verificationResult');
-
-                let deadlinesHtml = "";
-                if (data.deadlines?.length > 0) {
-                    deadlinesHtml = `
-                        <div style="margin-top: 1.5rem;">
-                            <h5><i class="fas fa-calendar-alt"></i> Suggested Deadlines</h5>
-                            <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                                ${data.deadlines.map(d => `<li><strong>${d.task}</strong> - Due: ${d.due_date}</li>`).join("")}
-                            </ul>
-                        </div>
-                    `;
-                }
-
-                let detailsHtml = "";
-                if (data.strengths?.length > 0) {
-                    detailsHtml += `
-                        <div style="margin-top: 1.5rem;">
-                            <h5><i class="fas fa-thumbs-up"></i> Strengths</h5>
-                            <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                                ${data.strengths.map(s => `<li>${s}</li>`).join("")}
-                            </ul>
-                        </div>
-                    `;
-                }
-                if (data.weaknesses?.length > 0) {
-                    detailsHtml += `
-                        <div style="margin-top: 1.5rem;">
-                            <h5><i class="fas fa-exclamation-triangle"></i> Weaknesses</h5>
-                            <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                                ${data.weaknesses.map(w => `<li>${w}</li>`).join("")}
-                            </ul>
-                        </div>
-                    `;
-                }
-                if (data.improvements?.length > 0) {
-                    detailsHtml += `
-                        <div style="margin-top: 1.5rem;">
-                            <h5><i class="fas fa-lightbulb"></i> Improvements</h5>
-                            <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                                ${data.improvements.map(i => `<li>${i}</li>`).join("")}
-                            </ul>
-                        </div>
-                    `;
-                }
-
-                resultDiv.innerHTML = `
-                    <div class="verification-success">
-                        <h4><i class="fas fa-check-circle"></i> Last Strategy Verification</h4>
-                        <div class="cache-indicator cache-cached">
-                            <i class="fas fa-database"></i> Using cached result from ${data.verified_at}
-                        </div>
-                        <div style="margin-top: 1rem;">
-                            <p><strong>AI Analysis:</strong> ${data.analysis}</p>
-                        </div>
-                        ${detailsHtml}
-                        ${deadlinesHtml}
-                        <div class="verification-actions" style="margin-top: 1.5rem;">
-                            <button class="btn-secondary" onclick="viewVerificationHistory()">
-                                <i class="fas fa-history"></i> View History
-                            </button>
-                            <button class="btn-primary" onclick="verifyStrategy(true)">
-                                <i class="fas fa-sync-alt"></i> Get Fresh Analysis
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-        })
-        .catch(err => console.error("Preload verification error:", err));
-});
-
-    </script>
+  function viewDetails(id) { window.location.href = '/hired-lawyer-details/' + id; }
+  function messageLawyer(id) { window.location.href = '/chatwithlawyer/' + id; }
+  function hireNewLawyer() { window.location.href = '/lawyers'; }
+  function verifyProgress(id) {
+    showNotification('Verification request sent for this case.', 'info', 'Verification Sent');
+  }
+</script>
 </body>
 </html>

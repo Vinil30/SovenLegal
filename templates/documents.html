@@ -1,225 +1,551 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soven Legal - Documents</title>
-    <link rel="stylesheet" href="static/css/documents.css">
-    <link rel="stylesheet" href="static/css/dashboard.css">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .delete-btn{
-            color: white;
-        }
-        .doc-requirements {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-        }
-        .doc-requirements h4 {
-            margin-top: 0;
-            color: #495057;
-        }
-        .required-elements {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .required-elements li {
-            padding: 5px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        .required-elements li:before {
-            content: "✓ ";
-            color: #28a745;
-            font-weight: bold;
-        }
-        .visual-reference {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e3f2fd;
-            border-radius: 5px;
-        }
-        .scan-details {
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            border-radius: 5px;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        .validity-valid { background-color: #d4edda; border-color: #c3e6cb; }
-        .validity-invalid { background-color: #f8d7da; border-color: #f5c6cb; }
-        .validity-questionable { background-color: #fff3cd; border-color: #ffeeba; }
-        .compliance-score {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-        .score-high { background-color: #d4edda; color: #155724; }
-        .score-medium { background-color: #fff3cd; color: #856404; }
-        .score-low { background-color: #f8d7da; color: #721c24; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soven Legal - Documents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="static/css/documents.css">
+<link rel="stylesheet" href="static/css/dashboard.css">
+<style>
+:root {
+  --cream: #F8F5F0;
+  --warm-white: #FDFCFA;
+  --ink: #1A1814;
+  --ink-muted: #4A4640;
+  --ink-light: #8A8480;
+  --gold: #B8922A;
+  --gold-light: #D4A843;
+  --gold-pale: #F5EDD8;
+  --sage: #4A5E52;
+  --sage-light: #EEF2EF;
+  --border: #E4DDD4;
+  --border-dark: #C8BFB4;
+  --sidebar-w: 260px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { min-height: 100%; font-family: 'DM Sans', sans-serif; font-weight: 300; background: var(--cream); color: var(--ink); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-w); height: 100vh;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  z-index: 200; transition: transform 0.3s ease;
+}
+.sidebar-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=60&auto=format&fit=crop');
+  background-size: cover; background-position: center;
+  opacity: 0.06; pointer-events: none;
+}
+.logo-container {
+  padding: 28px 24px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: relative; flex-shrink: 0;
+}
+.logo-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 500; color: white; line-height: 1; }
+.logo-name span { color: var(--gold-light); }
+.logo-sub { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 6px; }
+.sidebar nav { flex: 1; padding: 14px 0; overflow-y: auto; position: relative; }
+.sidebar ul { list-style: none; }
+.sidebar ul li { margin: 2px 12px; }
+.sidebar ul li a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 6px;
+  text-decoration: none; font-size: 0.82rem; font-weight: 300;
+  color: rgba(255,255,255,0.48); transition: all 0.2s;
+}
+.sidebar ul li a:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+.sidebar ul li a.active { color: white; background: rgba(184,146,42,0.16); border: 1px solid rgba(184,146,42,0.22); }
+.sidebar ul li a.active i { color: var(--gold-light); }
+.sidebar ul li a i { font-size: 0.82rem; width: 16px; text-align: center; color: rgba(255,255,255,0.28); transition: color 0.2s; }
+.sidebar ul li a:hover i { color: rgba(255,255,255,0.55); }
+.nav-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 20px; }
+.upload-wrap { padding: 14px 16px; }
+.btn-upload {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px;
+  background: var(--gold); color: white; border: none; border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.74rem; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-upload:hover { background: #9A7A22; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; position: relative; }
+.sidebar-footer p { font-size: 0.7rem; color: rgba(255,255,255,0.2); }
+
+/* ── MAIN ── */
+.main-content { margin-left: var(--sidebar-w); min-height: 100vh; }
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(253,252,250,0.93); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 16px; }
+.menu-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--ink-muted); font-size: 0.85rem; transition: all 0.2s;
+}
+.menu-toggle:hover { border-color: var(--ink); color: var(--ink); }
+.header-title { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 400; color: var(--ink); }
+.user-info { display: flex; align-items: center; gap: 14px; }
+.user-name { font-size: 0.84rem; color: var(--ink-muted); font-weight: 300; }
+.avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--ink); color: var(--gold-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500;
+  border: 2px solid var(--gold); cursor: pointer;
+}
+.compliance-info {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.75rem; color: var(--ink-light); font-weight: 300;
+}
+.compliance-score {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em;
+}
+.score-high   { background: var(--sage-light); color: var(--sage); }
+.score-medium { background: var(--gold-pale);  color: #9A7A22; }
+.score-low    { background: #fdf0ee;           color: #C0392B; }
+
+/* ── CONTENT ── */
+.content-area { padding: 36px 40px; display: flex; flex-direction: column; gap: 28px; }
+
+/* ── SECTION CARDS ── */
+.section-card { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; border-bottom: 1px solid var(--border); gap: 16px;
+}
+.section-head-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.section-label-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+.section-head h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 500; color: var(--ink); }
+.card-body { padding: 24px; }
+
+/* ── UPLOAD SECTION ── */
+.upload-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.upload-input {
+  flex: 1; min-width: 200px; height: 44px; padding: 0 14px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 300; color: var(--ink);
+  outline: none; transition: border-color 0.25s, box-shadow 0.25s;
+}
+.upload-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,146,42,0.1); }
+.upload-input::placeholder { color: var(--ink-light); }
+
+/* file input styling */
+.file-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 16px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 4px;
+  font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-muted); cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.file-label:hover { border-color: var(--border-dark); color: var(--ink); }
+.file-label i { font-size: 0.78rem; color: var(--ink-light); }
+#docFile { display: none; }
+#fileName { font-size: 0.78rem; color: var(--ink-light); font-style: italic; }
+
+.btn-primary-action {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 22px;
+  background: var(--ink); color: white; border: none; border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 400;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+  transition: background 0.2s; white-space: nowrap;
+}
+.btn-primary-action:hover { background: var(--gold); }
+
+/* ── REQUIRED DOCS ── */
+.req-actions {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.req-select {
+  height: 36px; padding: 0 12px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: var(--ink-muted);
+  outline: none; cursor: pointer; transition: border-color 0.2s;
+  max-width: 260px; min-width: 140px;
+}
+.req-select:focus { border-color: var(--gold); }
+.btn-sm-gold {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 36px; padding: 0 16px;
+  background: var(--gold); color: white; border: none; border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 400;
+  letter-spacing: 0.07em; text-transform: uppercase; cursor: pointer;
+  transition: background 0.2s; white-space: nowrap;
+}
+.btn-sm-gold:hover { background: #9A7A22; }
+.btn-sm-gold:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Required doc cards */
+#required-docs-container { display: flex; flex-direction: column; gap: 14px; padding: 24px; }
+.doc-req-card {
+  background: var(--cream); border: 1px solid var(--border); border-radius: 6px;
+  overflow: hidden; transition: border-color 0.2s;
+}
+.doc-req-card:hover { border-color: var(--border-dark); }
+.doc-req-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  background: white;
+}
+.doc-req-icon {
+  width: 34px; height: 34px; border-radius: 6px;
+  background: var(--gold-pale); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.doc-req-icon i { font-size: 0.82rem; color: var(--gold); }
+.doc-req-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+.doc-req-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+
+.req-elements-label { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 8px; }
+.required-elements { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.required-elements li {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 0.82rem; color: var(--ink-muted); font-weight: 300;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.required-elements li:last-child { border-bottom: none; padding-bottom: 0; }
+.required-elements li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); flex-shrink: 0; margin-top: 6px; }
+
+.visual-reference {
+  background: #EAF3FB; border: 1px solid #C2DCF5; border-radius: 5px; padding: 12px 14px;
+}
+.visual-ref-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2980b9; margin-bottom: 6px; display: block; }
+.visual-ref-desc { font-size: 0.82rem; color: var(--ink-muted); font-style: italic; line-height: 1.6; margin-bottom: 6px; }
+.visual-ref-features { font-size: 0.76rem; color: var(--ink-light); }
+.btn-ref {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+  height: 30px; padding: 0 12px;
+  background: white; border: 1px solid #C2DCF5; border-radius: 3px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #2980b9; cursor: pointer; transition: all 0.2s;
+}
+.btn-ref:hover { background: #2980b9; color: white; border-color: #2980b9; }
+
+.req-empty { font-size: 0.84rem; color: var(--ink-light); font-style: italic; padding: 24px; }
+
+/* ── UPLOADED DOCS ── */
+#docList { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.doc-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.doc-item:last-child { border-bottom: none; }
+.doc-item:hover { background: var(--cream); }
+
+.doc-icon-wrap {
+  width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0;
+  background: var(--sage-light); display: flex; align-items: center; justify-content: center;
+}
+.doc-icon-wrap i { font-size: 1rem; color: var(--sage); }
+
+.doc-info { flex: 1; min-width: 0; }
+.doc-name { font-size: 0.9rem; font-weight: 400; color: var(--ink); margin-bottom: 4px; display: block; }
+.doc-status-line { font-size: 0.75rem; color: var(--ink-light); font-weight: 300; }
+.doc-status-line strong { font-weight: 500; color: var(--ink-muted); }
+
+/* scan detail badges */
+.scan-details {
+  margin-top: 8px; padding: 10px 14px; border-radius: 5px; border: 1px solid;
+  font-size: 0.78rem; line-height: 1.7; font-weight: 300;
+}
+.scan-details strong { font-weight: 500; display: block; margin-bottom: 2px; }
+.validity-valid        { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+.validity-invalid      { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+.validity-questionable { background: #fff3cd; border-color: #ffeeba; color: #856404; }
+
+.doc-actions { display: flex; gap: 8px; align-items: flex-start; flex-shrink: 0; }
+.btn-scan {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 14px;
+  background: none; border: 1px solid var(--border-dark); border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-muted); cursor: pointer; transition: all 0.2s;
+}
+.btn-scan:hover { border-color: var(--gold); color: var(--gold); }
+.btn-delete {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 14px;
+  background: var(--ink); border: 1px solid var(--ink); border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: white; cursor: pointer; transition: all 0.2s;
+}
+.btn-delete:hover { background: #C0392B; border-color: #C0392B; }
+
+.docs-empty { font-size: 0.84rem; color: var(--ink-light); font-style: italic; padding: 24px; }
+
+/* ── MODAL ── */
+.modal {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(26,24,20,0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-content {
+  background: white; border-radius: 8px; border: 1px solid var(--border);
+  width: 100%; max-width: 640px; max-height: 80vh; overflow-y: auto;
+  position: relative; padding: 32px 36px;
+}
+.close {
+  position: absolute; top: 16px; right: 20px;
+  font-size: 1.2rem; color: var(--ink-light); cursor: pointer;
+  background: none; border: none; transition: color 0.2s;
+}
+.close:hover { color: var(--ink); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { transform: translateX(-260px); width: 260px; }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .content-area { padding: 24px 20px; }
+  header { padding: 0 20px; }
+  .upload-row { flex-direction: column; align-items: stretch; }
+}
+</style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo-container">
-            <h2 class="logo">Akaash Pandya</h2>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-bg"></div>
+  <div class="logo-container">
+    <div class="logo-name">Soven <span>Legal</span></div>
+    <div class="logo-sub">Simplifying your legal journey</div>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="/dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+      <li><a href="/documents" class="active"><i class="fas fa-file-alt"></i><span>Documents</span></a></li>
+      <div class="nav-divider"></div>
+      <li><a href="/hired-lawyers"><i class="fas fa-user-tie"></i><span>My Lawyers</span></a></li>
+      <li><a href="/lawyers"><i class="fas fa-search"></i><span>Find Lawyers</span></a></li>
+      <div class="nav-divider"></div>
+      <li><a href="/chat-interface"><i class="fas fa-comments"></i><span>Messages</span></a></li>
+      <li><a href="/legal-aid"><i class="fas fa-hands-helping"></i><span>Legal Help</span></a></li>
+    </ul>
+    <div class="upload-wrap">
+      <a href="/upload-case-file" class="btn-upload"><i class="fas fa-upload"></i> Upload Case File</a>
+    </div>
+  </nav>
+  <div class="sidebar-footer"><p>&copy; 2025 Soven Legal</p></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <h1 class="header-title">Documents</h1>
+    </div>
+    <div class="user-info">
+      <span class="user-name">{{ user.name }}</span>
+      <div class="avatar">{{ user.initials }}</div>
+      <div class="compliance-info">
+        Compliance:
+        <span class="compliance-score" id="userComplianceScore">{{ user.compliance_score or 'N/A' }}</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="content-area">
+
+    <!-- UPLOAD SECTION -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-label-dot"></div>
+          <h3>Add New Document</h3>
         </div>
-        <ul>
-            <li><a href="/dashboard" ><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-            <li><a href="/documents" class="active"><i class="fas fa-file-alt"></i> <span>Documents</span></a></li>
-            <li><a href="/hired-lawyers"><i class="fas fa-user-tie"></i> <span>My Lawyers</span></a></li>
-            <li><a href="/lawyers"><i class="fas fa-user-tie"></i> <span>Find Lawyers</span></a></li>
-            <li><a href="/chat-interface"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
-            <li><a href="/legal-aid"><i class="fas fa-hands-helping"></i> <span>Legal Help</span></a></li>
-            <li><a href="/upload-case-file" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Case File</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2023 Soven Legal</p>
+      </div>
+      <div class="card-body">
+        <div class="upload-row">
+          <input type="text" id="docName" class="upload-input" placeholder="Enter document name">
+          <label for="docFile" class="file-label">
+            <i class="fas fa-paperclip"></i>
+            <span id="fileName">Choose file…</span>
+          </label>
+          <input type="file" id="docFile" accept="image/*,application/pdf">
+          <button class="btn-primary-action" onclick="uploadDocument()">
+            <i class="fas fa-upload"></i> Add Document
+          </button>
         </div>
+      </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <header>
-            <h1>Documents</h1>
-            <div class="user-info">
-                <span>{{ user.name }}</span>
-                <div class="avatar">{{ user.initials }}</div>
-                <div class="compliance-info">
-                    <small>Compliance Score: 
-                        <span class="compliance-score" id="userComplianceScore">{{ user.compliance_score or 'N/A' }}</span>
-                    </small>
-                </div>
-            </div>
-        </header>
+    <!-- REQUIRED DOCUMENTS -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-label-dot"></div>
+          <h3>Required Documents</h3>
+        </div>
+        <div class="req-actions">
+          <select id="docQuerySelect" class="req-select">
+            {% if saved_queries %}
+              {% for q in saved_queries %}
+                <option value="{{ q.id }}">{{ q.text[:50] }}...</option>
+              {% endfor %}
+            {% else %}
+              <option value="" disabled selected>No queries yet</option>
+            {% endif %}
+          </select>
+          <button class="btn-sm-gold" id="generateDocsBtn" onclick="handleGenerateDocs()"
+            {% if not saved_queries %}disabled{% endif %}>
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Get Required Documents
+          </button>
+        </div>
+      </div>
 
-        <!-- Upload Section -->
-        <section class="upload-section">
-            <h3>Add New Document</h3>
-            <div class="upload-box">
-                <input type="text" id="docName" placeholder="Enter document name">
-                <input type="file" id="docFile" accept="image/*,application/pdf">
-                <button onclick="uploadDocument()">Add Document</button>
+      <div id="required-docs-container">
+        {% if saved_queries and saved_queries[0].documents %}
+          {% for doc in saved_queries[0].documents %}
+          <div class="doc-req-card">
+            <div class="doc-req-header">
+              <div class="doc-req-icon"><i class="fas fa-file-alt"></i></div>
+              <span class="doc-req-name">{{ doc.name if doc.name else doc }}</span>
             </div>
-        </section>
-
-        <!-- Required Documents (per selected query) -->
-        <section class="required-docs">
-            <div class="section-header">
-                <h3>Required Documents</h3>
-                <div class="section-actions" style="display:flex;gap:.5rem;align-items:center;">
-                    <select id="docQuerySelect">
-                        {% if saved_queries %}
-                            {% for q in saved_queries %}
-                                <option value="{{ q.id }}">{{ q.text[:50] }}...</option>
-                            {% endfor %}
-                        {% else %}
-                            <option value="" disabled selected>No queries yet</option>
-                        {% endif %}
-                    </select>
-                    <button class="add-btn" id="generateDocsBtn" onclick="handleGenerateDocs()"
-                        {% if not saved_queries %}disabled{% endif %}>
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Get required Documents
-                    </button>
-                </div>
-            </div>
-            <div id="required-docs-container">
-                {% if saved_queries and saved_queries[0].documents %}
-                    {% for doc in saved_queries[0].documents %}
-                        <div class="doc-requirements">
-                            <h4>{{ doc.name if doc.name else doc }}</h4>
-                            {% if doc.required_elements %}
-                                <p><strong>Required Elements:</strong></p>
-                                <ul class="required-elements">
-                                    {% for element in doc.required_elements %}
-                                        <li>{{ element }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                            {% if doc.visual_reference %}
-                                <div class="visual-reference">
-                                    <strong>Visual Reference:</strong>
-                                    <p><em>{{ doc.visual_reference.layout_description }}</em></p>
-                                    {% if doc.visual_reference.key_visual_features %}
-                                        <small>Key features: {{ ', '.join(doc.visual_reference.key_visual_features) }}</small>
-                                    {% endif %}
-                                    <button style="margin-top: 20px;" class="add-btn" onclick="handle_doc_reference()">See Reference</button>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No required documents yet. Run "Analyze" on a query or click "Get required Documents".</p>
+            <div class="doc-req-body">
+              {% if doc.required_elements %}
+              <div>
+                <div class="req-elements-label">Required Elements</div>
+                <ul class="required-elements">
+                  {% for element in doc.required_elements %}
+                  <li>{{ element }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+              {% if doc.visual_reference %}
+              <div class="visual-reference">
+                <span class="visual-ref-label">Visual Reference</span>
+                <p class="visual-ref-desc">{{ doc.visual_reference.layout_description }}</p>
+                {% if doc.visual_reference.key_visual_features %}
+                <p class="visual-ref-features">Key features: {{ ', '.join(doc.visual_reference.key_visual_features) }}</p>
                 {% endif %}
+                <button class="btn-ref" onclick="handle_doc_reference()">
+                  <i class="fas fa-eye"></i> See Reference
+                </button>
+              </div>
+              {% endif %}
             </div>
-        </section>
-
-        <!-- Uploaded Docs -->
-        <section class="uploaded-docs">
-            <h3>Your Uploaded Documents</h3>
-            <ul id="docList">
-                {% if uploaded_docs %}
-                    {% for doc in uploaded_docs %}
-                    <li id="doc-{{ doc.id }}" class="doc-item">
-                        <div class="doc-info">
-                            <i class="fas fa-file"></i>
-                            <span class="doc-name">{{ doc.name }}</span>
-                        </div>
-
-                        <!-- Enhanced scan info -->
-                        <div class="doc-status">
-                            <small>Status: <strong>{{ doc.scan_status }}</strong></small><br>
-                            {% if doc.scan_result and doc.scan_result.overall_validity %}
-                                <div class="scan-details validity-{{ doc.scan_result.overall_validity }}">
-                                    <strong>Validity: {{ doc.scan_result.overall_validity|title }}</strong>
-                                    {% if doc.scan_result.authenticity_score %}
-                                        <br><small>Authenticity Score: {{ doc.scan_result.authenticity_score }}%</small>
-                                    {% endif %}
-                                    {% if doc.scan_result.required_elements_check %}
-                                        <br><small>Elements Check: 
-                                            {% if doc.scan_result.required_elements_check.all_present %}
-                                                All Present ✓
-                                            {% else %}
-                                                Missing: {{ ', '.join(doc.scan_result.required_elements_check.missing_elements or []) }}
-                                            {% endif %}
-                                        </small>
-                                    {% endif %}
-                                </div>
-                            {% else %}
-                                <small>Result: {{ doc.scan_result if doc.scan_result else 'Not scanned yet' }}</small>
-                            {% endif %}
-                        </div>
-
-                        <div class="doc-actions">
-                            <button class="scan-btn" onclick="scanDocument('{{ doc.id }}')">
-                                {% if doc.scan_status == 'completed' %}Re-scan{% else %}Scan{% endif %}
-                            </button>
-                            <button class="delete-btn" onclick="deleteDocument('{{ doc.id }}')">Delete</button>
-                        </div>
-                    </li>
-                    {% endfor %}
-                {% else %}
-                    <p>No documents uploaded yet.</p>
-                {% endif %}
-            </ul>
-        </section>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="req-empty">No required documents yet. Run "Analyze" on a query or click "Get Required Documents".</p>
+        {% endif %}
+      </div>
     </div>
 
-    <!-- Document Details Modal -->
-    <div id="documentModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeDocumentModal()">&times;</span>
-            <div id="modalContent">
-                <!-- Dynamic content will be loaded here -->
-            </div>
+    <!-- UPLOADED DOCUMENTS -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-label-dot"></div>
+          <h3>Your Uploaded Documents</h3>
         </div>
+      </div>
+      <ul id="docList">
+        {% if uploaded_docs %}
+          {% for doc in uploaded_docs %}
+          <li id="doc-{{ doc.id }}" class="doc-item">
+            <div class="doc-icon-wrap">
+              <i class="fas fa-file"></i>
+            </div>
+            <div class="doc-info">
+              <span class="doc-name">{{ doc.name }}</span>
+              <span class="doc-status-line">
+                Status: <strong>{{ doc.scan_status }}</strong>
+              </span>
+              {% if doc.scan_result and doc.scan_result.overall_validity %}
+              <div class="scan-details validity-{{ doc.scan_result.overall_validity }}">
+                <strong>Validity: {{ doc.scan_result.overall_validity|title }}</strong>
+                {% if doc.scan_result.authenticity_score %}
+                <small>Authenticity Score: {{ doc.scan_result.authenticity_score }}%</small>
+                {% endif %}
+                {% if doc.scan_result.required_elements_check %}
+                <small>Elements Check:
+                  {% if doc.scan_result.required_elements_check.all_present %}
+                    All Present ✓
+                  {% else %}
+                    Missing: {{ ', '.join(doc.scan_result.required_elements_check.missing_elements or []) }}
+                  {% endif %}
+                </small>
+                {% endif %}
+              </div>
+              {% else %}
+              <span class="doc-status-line" style="margin-top:4px; display:block;">
+                Result: {{ doc.scan_result if doc.scan_result else 'Not scanned yet' }}
+              </span>
+              {% endif %}
+            </div>
+            <div class="doc-actions">
+              <button class="btn-scan" onclick="scanDocument('{{ doc.id }}')">
+                <i class="fas fa-search"></i>
+                {% if doc.scan_status == 'completed' %}Re-scan{% else %}Scan{% endif %}
+              </button>
+              <button class="btn-delete" onclick="deleteDocument('{{ doc.id }}')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </li>
+          {% endfor %}
+        {% else %}
+          <p class="docs-empty">No documents uploaded yet.</p>
+        {% endif %}
+      </ul>
     </div>
 
-    <script src="static/js/documents.js"></script>
+  </div><!-- /content-area -->
+</div><!-- /main-content -->
+
+<!-- MODAL -->
+<div id="documentModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <button class="close" onclick="closeDocumentModal()"><i class="fas fa-times"></i></button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+/* sidebar toggle */
+var menuToggle = document.getElementById('menuToggle');
+if (menuToggle) {
+  menuToggle.addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+}
+
+/* file input label update */
+var docFileInput = document.getElementById('docFile');
+if (docFileInput) {
+  docFileInput.addEventListener('change', function() {
+    var name = this.files[0] ? this.files[0].name : 'Choose file…';
+    document.getElementById('fileName').textContent = name;
+  });
+}
+</script>
+
+<script src="static/js/documents.js"></script>
 </body>
 </html>

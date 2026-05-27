@@ -1,286 +1,609 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Title Deed Reference (Sale Deed/Gift Deed/Partition Deed/Will)</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            color: #333;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Title Deed Reference | Soven Legal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+:root {
+  --cream: #F8F5F0;
+  --warm-white: #FDFCFA;
+  --ink: #1A1814;
+  --ink-muted: #4A4640;
+  --ink-light: #8A8480;
+  --gold: #B8922A;
+  --gold-light: #D4A843;
+  --gold-pale: #F5EDD8;
+  --sage: #4A5E52;
+  --sage-light: #EEF2EF;
+  --border: #E4DDD4;
+  --border-dark: #C8BFB4;
 
-        h1, h2, h3 {
-            color: #0056b3;
-            margin-bottom: 0.5em;
-        }
+  /* section accent colors — preserved semantically */
+  --accent-parties:      #B8922A; /* gold  */
+  --accent-property:     #4A5E52; /* sage  */
+  --accent-consideration:#C0392B; /* red   */
+  --accent-transfer:     #2980b9; /* blue  */
+  --accent-registration: #6c757d; /* gray  */
+  --accent-attestation:  #2980b9; /* blue  */
+}
 
-        h1 {
-            border-bottom: 2px solid #0056b3;
-            padding-bottom: 0.5em;
-        }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
-        section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.7;
+}
 
-        .section-title {
-            font-weight: bold;
-            color: #007bff;
-            margin-bottom: 10px;
-        }
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+  padding: 52px 60px 48px;
+}
+.page-header-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&q=70&auto=format&fit=crop');
+  background-size: cover; background-position: center;
+  opacity: 0.07; pointer-events: none;
+}
+.page-header-tint {
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, rgba(26,24,20,0.97) 0%, rgba(26,24,20,0.80) 100%);
+}
+.page-header-inner { position: relative; z-index: 1; max-width: 860px; }
+.header-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold-light); font-weight: 400; margin-bottom: 18px;
+}
+.header-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold-light); }
+.page-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 400; line-height: 1.1;
+  color: white; margin-bottom: 14px;
+}
+.page-header h1 em { font-style: italic; color: var(--gold-light); }
+.page-header p {
+  font-size: 0.9rem; color: rgba(255,255,255,0.5);
+  font-weight: 300; max-width: 540px; line-height: 1.75;
+}
+.header-back {
+  position: absolute; top: 28px; right: 40px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s;
+}
+.header-back:hover { color: var(--gold-light); }
+.header-back i { font-size: 0.68rem; }
 
-        .checklist {
-            list-style-type: none;
-            padding: 0;
-        }
+/* ── QUICK NAV ── */
+.quick-nav {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 0 60px;
+  display: flex; align-items: center; gap: 0;
+  overflow-x: auto; position: sticky; top: 0; z-index: 100;
+}
+.quick-nav a {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 14px 16px;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-light); text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s; white-space: nowrap;
+}
+.quick-nav a:hover { color: var(--ink); border-bottom-color: var(--gold); }
+.quick-nav a i { font-size: 0.7rem; }
 
-        .checklist li {
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-        }
+/* ── MAIN LAYOUT ── */
+.page-body { max-width: 1000px; margin: 0 auto; padding: 52px 40px 80px; display: flex; flex-direction: column; gap: 20px; }
 
-        .checklist li::before {
-            content: '✓'; /* Checkmark */
-            color: green;
-            margin-right: 8px;
-        }
+/* ── SECTION CARDS ── */
+.ref-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+  position: relative;
+}
+.ref-card:hover { box-shadow: 0 4px 24px rgba(26,24,20,0.07); }
+.ref-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--accent, var(--gold));
+}
 
-        .important {
-            color: red;
-            font-weight: bold;
-        }
+/* accent variants */
+.ref-card.parties      { --accent: var(--accent-parties); }
+.ref-card.property     { --accent: var(--accent-property); }
+.ref-card.consideration{ --accent: var(--accent-consideration); }
+.ref-card.transfer     { --accent: var(--accent-transfer); }
+.ref-card.registration { --accent: var(--accent-registration); }
+.ref-card.attestation  { --accent: var(--accent-attestation); }
 
-        .example {
-            background-color: #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-style: italic;
-        }
+.card-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 24px 18px 28px;
+  border-bottom: 1px solid var(--border);
+}
+.card-head-icon {
+  width: 38px; height: 38px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gold-pale);
+}
+.card-head-icon i { font-size: 0.9rem; color: var(--gold); }
+.ref-card.property     .card-head-icon { background: var(--sage-light); }
+.ref-card.property     .card-head-icon i { color: var(--sage); }
+.ref-card.consideration .card-head-icon { background: #fdf0ee; }
+.ref-card.consideration .card-head-icon i { color: #C0392B; }
+.ref-card.transfer     .card-head-icon { background: #eaf3fb; }
+.ref-card.transfer     .card-head-icon i { color: #2980b9; }
+.ref-card.registration .card-head-icon { background: #f4f4f4; }
+.ref-card.registration .card-head-icon i { color: #6c757d; }
+.ref-card.attestation  .card-head-icon { background: #eaf3fb; }
+.ref-card.attestation  .card-head-icon i { color: #2980b9; }
 
-        .property-description {
-            white-space: pre-line; /* Preserves line breaks */
-        }
+.card-head-text {}
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 500; color: var(--ink); line-height: 1.2;
+}
+.card-subtitle { font-size: 0.78rem; color: var(--ink-light); font-weight: 300; margin-top: 2px; }
 
-        .key-visual-features {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
+.card-body { padding: 20px 24px 20px 28px; display: flex; flex-direction: column; gap: 16px; }
 
-        .key-visual-features li {
-            margin-bottom: 5px;
-        }
+/* ── CHECKLIST ── */
+.checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.85rem; color: var(--ink-muted); font-weight: 300;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  line-height: 1.6;
+}
+.checklist li:last-child { border-bottom: none; padding-bottom: 0; }
+.check-icon {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  background: var(--sage-light); display: flex; align-items: center; justify-content: center;
+}
+.check-icon i { font-size: 0.55rem; color: var(--sage); }
+.important { color: var(--ink); font-weight: 500; }
 
-        .printer-friendly {
-            background-color: white !important;
-            border: none !important;
-            color: black !important;
-        }
+/* ── EXAMPLE BOX ── */
+.example-box {
+  background: var(--cream); border: 1px solid var(--border);
+  border-left: 3px solid var(--gold); border-radius: 4px;
+  padding: 14px 16px;
+}
+.example-label {
+  font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); font-weight: 400; margin-bottom: 6px;
+}
+.example-text {
+  font-size: 0.83rem; color: var(--ink-muted); font-style: italic;
+  line-height: 1.7; font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
+}
+.property-description { white-space: pre-line; }
 
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-            section {
-                border: none;
-                background-color: white;
-                padding: 0;
-            }
-            .printer-friendly {
-               display: block !important;
-            }
-        }
+/* ── KEY VISUAL FEATURES ── */
+.visual-features-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;
+}
+.visual-feature-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 5px;
+  padding: 10px 12px; font-size: 0.8rem; color: var(--ink-muted); font-weight: 300;
+}
+.visual-feature-item i { font-size: 0.78rem; color: var(--gold); flex-shrink: 0; }
 
-        /* Hover effects */
-        section:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
+/* ── TYPICAL SECTIONS LIST ── */
+.sections-list {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;
+  list-style: none;
+}
+.sections-list li {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 5px;
+  padding: 10px 14px; font-size: 0.82rem; color: var(--ink-muted); font-weight: 300;
+}
+.sections-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-light); flex-shrink: 0; }
 
-        /* Color coding */
-        .parties-section { border-color: #ffc107; } /* Yellowish */
-        .property-section { border-color: #28a745; } /* Green */
-        .consideration-section { border-color: #dc3545; } /* Red */
-        .transfer-section { border-color: #17a2b8; } /* Cyan */
-        .registration-section { border-color: #6c757d; } /* Gray */
-        .attestation-section { border-color: #007bff; } /* Blue */
-    </style>
+/* ── LAYOUT DESCRIPTION ── */
+.layout-desc {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 6px;
+  padding: 16px 18px;
+}
+.layout-desc i { font-size: 1.1rem; color: var(--ink-light); margin-top: 2px; }
+.layout-desc p { font-size: 0.85rem; color: var(--ink-muted); font-weight: 300; line-height: 1.7; }
+
+/* ── REFERENCE LINK ── */
+.ref-link-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  background: var(--ink); border-radius: 8px; padding: 24px 28px;
+}
+.ref-link-card .ref-link-text {}
+.ref-link-card .ref-link-label {
+  font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin-bottom: 6px;
+}
+.ref-link-card .ref-link-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 400; color: white;
+}
+.ref-link-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px; background: var(--gold); color: white;
+  border: none; border-radius: 4px; text-decoration: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.74rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  transition: background 0.2s; white-space: nowrap;
+}
+.ref-link-btn:hover { background: #9A7A22; }
+.ref-link-btn i { font-size: 0.7rem; }
+
+/* ── PRINT ── */
+@media print {
+  .quick-nav, .page-header, .header-back { display: none; }
+  .page-body { padding: 20px; }
+  .ref-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  .ref-card::before { display: none; }
+}
+
+@media (max-width: 680px) {
+  .page-header { padding: 36px 24px 32px; }
+  .page-header h1 { font-size: 2rem; }
+  .page-body { padding: 32px 20px 60px; }
+  .quick-nav { padding: 0 20px; }
+  .card-body, .card-head { padding-left: 20px; }
+}
+</style>
 </head>
 <body>
 
-    <h1>Title Deed Reference (Sale Deed/Gift Deed/Partition Deed/Will)</h1>
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-bg"></div>
+  <div class="page-header-tint"></div>
+  <a href="javascript:history.back()" class="header-back"><i class="fas fa-arrow-left"></i> Back</a>
+  <div class="page-header-inner">
+    <div class="header-eyebrow">Document Reference Guide</div>
+    <h1>Title Deed <em>Reference</em></h1>
+    <p>Sale Deed · Gift Deed · Partition Deed · Will — a complete checklist of required elements, visual features, and registration details.</p>
+  </div>
+</div>
 
-    <section class="parties-section">
-        <h2 class="section-title">Names of the Parties Involved</h2>
-        <p>Details about the individuals or entities involved in the deed.</p>
-        <ul class="checklist">
-            <li>Seller/Donor/Partitioner/Testator: <span class="important">Full name, address, and PAN details.</span></li>
-            <li>Buyer/Donee/Other Partitioner/Beneficiary: <span class="important">Full name, address, and PAN details.</span></li>
-        </ul>
-        <div class="example">
-            Example: "This Sale Deed made and executed on this 15th day of October, 2024, by Mr. John Doe, residing at..."
-        </div>
-    </section>
+<!-- QUICK NAV -->
+<nav class="quick-nav">
+  <a href="#parties"><i class="fas fa-users"></i> Parties</a>
+  <a href="#property"><i class="fas fa-map-marker-alt"></i> Property</a>
+  <a href="#consideration"><i class="fas fa-coins"></i> Consideration</a>
+  <a href="#transfer"><i class="fas fa-exchange-alt"></i> Transfer</a>
+  <a href="#chain"><i class="fas fa-link"></i> Chain of Title</a>
+  <a href="#registration"><i class="fas fa-stamp"></i> Registration</a>
+  <a href="#attestation"><i class="fas fa-pen-nib"></i> Signatures</a>
+  <a href="#stamp"><i class="fas fa-receipt"></i> Stamp Duty</a>
+  <a href="#mutation"><i class="fas fa-file-signature"></i> Mutation</a>
+  <a href="#execution"><i class="fas fa-calendar"></i> Execution</a>
+  <a href="#visual"><i class="fas fa-eye"></i> Visual Features</a>
+</nav>
 
-    <section class="property-section">
-        <h2 class="section-title">Complete Property Description</h2>
-        <p>A detailed description of the property being transferred.</p>
-        <ul class="checklist">
-            <li>Area: <span class="important">Specify the exact area (e.g., in square feet, acres).</span></li>
-            <li>Boundaries: <span class="important">North, South, East, and West boundaries clearly defined.</span></li>
-            <li>Survey Number: <span class="important">As per the land records.</span></li>
-            <li>Location: <span class="important">Village, Taluk, District, and State.</span></li>
-        </ul>
-        <div class="example">
-            <p>Example:</p>
-            <p class="property-description">"All that piece and parcel of land bearing Survey No. 123/4, situated at Village ABC, Taluk XYZ, District PQR, State Tamil Nadu, measuring an extent of 2400 sq. ft. and bounded on the North by..., on the South by..., on the East by..., and on the West by..."</p>
-        </div>
-    </section>
+<!-- BODY -->
+<div class="page-body">
 
-    <section class="consideration-section">
-        <h2 class="section-title">Consideration Amount / Value of Gift/Property</h2>
-        <p>The monetary value exchanged in the transaction or the estimated value of the gift or property.</p>
-        <ul class="checklist">
-            <li>Sale Deed: <span class="important">The agreed-upon sale price.</span></li>
-            <li>Gift Deed: <span class="important">The estimated market value of the gifted property.</span></li>
-            <li>Partition Deed/Will: <span class="important">Value of the respective share</span></li>
-        </ul>
-        <div class="example">
-            Example (Sale Deed): "The Sale Consideration for this transaction is Rs. 50,00,000 (Rupees Fifty Lakhs Only)."
-        </div>
-    </section>
+  <!-- PARTIES -->
+  <div class="ref-card parties" id="parties">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-users"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Names of the Parties Involved</div>
+        <div class="card-subtitle">Details about the individuals or entities involved in the deed</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li>
+          <div class="check-icon"><i class="fas fa-check"></i></div>
+          <span>Seller / Donor / Partitioner / Testator — <span class="important">Full name, address, and PAN details.</span></span>
+        </li>
+        <li>
+          <div class="check-icon"><i class="fas fa-check"></i></div>
+          <span>Buyer / Donee / Other Partitioner / Beneficiary — <span class="important">Full name, address, and PAN details.</span></span>
+        </li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"This Sale Deed made and executed on this 15th day of October, 2024, by Mr. John Doe, residing at..."</p>
+      </div>
+    </div>
+  </div>
 
-    <section class="transfer-section">
-        <h2 class="section-title">Clear and Unambiguous Transfer of Ownership Clause</h2>
-        <p>A statement explicitly transferring the ownership of the property.</p>
-        <ul class="checklist">
-            <li><span class="important">Must clearly state the transfer of all rights, title, and interest.</span></li>
-        </ul>
-        <div class="example">
-            Example: "The Seller hereby conveys, transfers, and assigns all his/her rights, title, and interest in the said property to the Buyer absolutely and forever."
-        </div>
-    </section>
+  <!-- PROPERTY -->
+  <div class="ref-card property" id="property">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-map-marked-alt"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Complete Property Description</div>
+        <div class="card-subtitle">A detailed description of the property being transferred</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Area — <span class="important">Specify the exact area (e.g., in square feet, acres).</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Boundaries — <span class="important">North, South, East, and West boundaries clearly defined.</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Survey Number — <span class="important">As per the land records.</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Location — <span class="important">Village, Taluk, District, and State.</span></span></li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text property-description">"All that piece and parcel of land bearing Survey No. 123/4, situated at Village ABC, Taluk XYZ, District PQR, State Tamil Nadu, measuring an extent of 2400 sq. ft. and bounded on the North by..., on the South by..., on the East by..., and on the West by..."</p>
+      </div>
+    </div>
+  </div>
 
-    <section>
-        <h2 class="section-title">Chain of Title (Previous Ownership History, if available)</h2>
-        <p>A brief overview of the previous owners of the property.</p>
-        <ul class="checklist">
-            <li>Previous Owners <span class="important">Names and relevant document refrences</span></li>
-        </ul>
-        <div class="example">
-            Example: "The said property was originally owned by Mr. XYZ, who sold it to Mr. ABC vide Sale Deed registered as Document No. 1234/2010..."
-        </div>
-    </section>
+  <!-- CONSIDERATION -->
+  <div class="ref-card consideration" id="consideration">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-coins"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Consideration Amount / Value of Gift / Property</div>
+        <div class="card-subtitle">The monetary value exchanged or estimated value of the gift or property</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Sale Deed — <span class="important">The agreed-upon sale price.</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Gift Deed — <span class="important">The estimated market value of the gifted property.</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Partition Deed / Will — <span class="important">Value of the respective share.</span></span></li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example — Sale Deed</div>
+        <p class="example-text">"The Sale Consideration for this transaction is Rs. 50,00,000 (Rupees Fifty Lakhs Only)."</p>
+      </div>
+    </div>
+  </div>
 
-    <section class="registration-section">
-        <h2 class="section-title">Registration Details</h2>
-        <p>Information about the registration of the deed at the Sub-Registrar Office.</p>
-        <ul class="checklist">
-            <li>Book Number:</li>
-            <li>Volume Number:</li>
-            <li>Page Numbers:</li>
-            <li>Registration Date: <span class="important">Date of registration at the SRO.</span></li>
-            <li>Sub-Registrar Office Details: <span class="important">Name and address of the SRO.</span></li>
-        </ul>
-        <div class="example">
-            Example: "Registered at the Sub-Registrar Office, Chennai South, as Document No. 5678/2024, in Book 1, Volume 234, Pages 123-130, dated 20th October 2024."
-        </div>
-    </section>
+  <!-- TRANSFER -->
+  <div class="ref-card transfer" id="transfer">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-exchange-alt"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Clear and Unambiguous Transfer of Ownership Clause</div>
+        <div class="card-subtitle">A statement explicitly transferring ownership of the property</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li>
+          <div class="check-icon"><i class="fas fa-check"></i></div>
+          <span class="important">Must clearly state the transfer of all rights, title, and interest.</span>
+        </li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"The Seller hereby conveys, transfers, and assigns all his/her rights, title, and interest in the said property to the Buyer absolutely and forever."</p>
+      </div>
+    </div>
+  </div>
 
-    <section class="attestation-section">
-        <h2 class="section-title">Signatures of all Parties and Witnesses</h2>
-        <p>Signatures of the involved parties and witnesses.</p>
-        <ul class="checklist">
-            <li>Seller/Donor/Partitioner/Testator: <span class="important">Signature and full name.</span></li>
-            <li>Buyer/Donee/Other Partitioner/Beneficiary: <span class="important">Signature and full name.</span></li>
-            <li>Witnesses: <span class="important">At least two witnesses with signatures and full names.</span></li>
-        </ul>
-        <div class="example">
-            Example: "Signed, Sealed, and Delivered by the within named Seller, Mr. John Doe, in the presence of:"
-        </div>
-    </section>
+  <!-- CHAIN OF TITLE -->
+  <div class="ref-card" id="chain">
+    <div class="card-head">
+      <div class="card-head-icon" style="background:#f0eeff;"><i class="fas fa-link" style="color:#6c5ce7;"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Chain of Title</div>
+        <div class="card-subtitle">Previous ownership history, if available</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li>
+          <div class="check-icon"><i class="fas fa-check"></i></div>
+          <span>Previous Owners — <span class="important">Names and relevant document references.</span></span>
+        </li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"The said property was originally owned by Mr. XYZ, who sold it to Mr. ABC vide Sale Deed registered as Document No. 1234/2010..."</p>
+      </div>
+    </div>
+  </div>
 
-     <section>
-        <h2 class="section-title">Stamp Duty Paid Details</h2>
-        <p>Information regarding the stamp duty paid for the registration of the deed.</p>
-        <ul class="checklist">
-            <li>Amount:</li>
-            <li>Receipt Number:</li>
-            <li>Date of Payment:</li>
-        </ul>
-        <div class="example">
-            Example: "Stamp duty of Rs. XX,XXX/- paid vide receipt no. ABC1234567, dated DD/MM/YYYY"
-        </div>
-    </section>
+  <!-- REGISTRATION -->
+  <div class="ref-card registration" id="registration">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-stamp"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Registration Details</div>
+        <div class="card-subtitle">Information about registration at the Sub-Registrar Office</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Book Number</span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Volume Number</span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Page Numbers</span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Registration Date — <span class="important">Date of registration at the SRO.</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Sub-Registrar Office Details — <span class="important">Name and address of the SRO.</span></span></li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"Registered at the Sub-Registrar Office, Chennai South, as Document No. 5678/2024, in Book 1, Volume 234, Pages 123–130, dated 20th October 2024."</p>
+      </div>
+    </div>
+  </div>
 
-     <section>
-        <h2 class="section-title">Mutation Records</h2>
-        <p>Information about mutation in land records.</p>
-        <ul class="checklist">
-            <li>Mutation Order Number:</li>
-            <li>Date of Mutation:</li>
-            <li>Authority:</li>
-        </ul>
-        <div class="example">
-            Example: "Mutation Order No. 1234/2024 dated DD/MM/YYYY issued by Talathi Office, ABC Village."
-        </div>
-    </section>
+  <!-- ATTESTATION -->
+  <div class="ref-card attestation" id="attestation">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-pen-nib"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Signatures of All Parties and Witnesses</div>
+        <div class="card-subtitle">Signatures of the involved parties and witnesses</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Seller / Donor / Partitioner / Testator — <span class="important">Signature and full name.</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Buyer / Donee / Other Partitioner / Beneficiary — <span class="important">Signature and full name.</span></span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Witnesses — <span class="important">At least two witnesses with signatures and full names.</span></span></li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"Signed, Sealed, and Delivered by the within named Seller, Mr. John Doe, in the presence of:"</p>
+      </div>
+    </div>
+  </div>
 
-    <section>
-        <h2 class="section-title">Date of Execution</h2>
-        <p>The date on which the deed was executed (signed).</p>
-        <ul class="checklist">
-            <li>Date: <span class="important">The exact date on which the deed was signed by all parties.</span></li>
-        </ul>
-        <div class="example">
-            Example: "This Sale Deed is executed on this 15th day of October, 2024."
-        </div>
-    </section>
+  <!-- STAMP DUTY -->
+  <div class="ref-card" id="stamp">
+    <div class="card-head">
+      <div class="card-head-icon" style="background:#fff3cd;"><i class="fas fa-receipt" style="color:#856404;"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Stamp Duty Paid Details</div>
+        <div class="card-subtitle">Information regarding the stamp duty paid for deed registration</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Amount</span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Receipt Number</span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Date of Payment</span></li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"Stamp duty of Rs. XX,XXX/- paid vide receipt no. ABC1234567, dated DD/MM/YYYY"</p>
+      </div>
+    </div>
+  </div>
 
-    <section>
-        <h2 class="section-title">Key Visual Features</h2>
-        <p>Visual cues to identify a Title Deed.</p>
-        <ul class="key-visual-features">
-            <li>Presence of revenue stamps or franking</li>
-            <li>Seal of the Sub-Registrar of Assurances</li>
-            <li>Notary Public seal and signature (if notarized)</li>
-            <li>Registration number and date</li>
-            <li>Typed or handwritten text (can be a mix)</li>
-            <li>Legal jargon and specific clauses</li>
-        </ul>
-    </section>
+  <!-- MUTATION -->
+  <div class="ref-card" id="mutation">
+    <div class="card-head">
+      <div class="card-head-icon" style="background:#e8f5e9;"><i class="fas fa-file-signature" style="color:#2e7d32;"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Mutation Records</div>
+        <div class="card-subtitle">Information about mutation in land records</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Mutation Order Number</span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Date of Mutation</span></li>
+        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Authority</span></li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"Mutation Order No. 1234/2024 dated DD/MM/YYYY issued by Talathi Office, ABC Village."</p>
+      </div>
+    </div>
+  </div>
 
-    <section>
-        <h2 class="section-title">Layout Description</h2>
-        <p>How the Title Deed usually looks.</p>
-        <p>Typically printed on stamp paper, with multiple pages. Each page will bear signatures and seals.</p>
-    </section>
+  <!-- DATE OF EXECUTION -->
+  <div class="ref-card" id="execution">
+    <div class="card-head">
+      <div class="card-head-icon" style="background:#fce4ec;"><i class="fas fa-calendar-alt" style="color:#c62828;"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Date of Execution</div>
+        <div class="card-subtitle">The date on which the deed was executed (signed)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="checklist">
+        <li>
+          <div class="check-icon"><i class="fas fa-check"></i></div>
+          <span>Date — <span class="important">The exact date on which the deed was signed by all parties.</span></span>
+        </li>
+      </ul>
+      <div class="example-box">
+        <div class="example-label">Example</div>
+        <p class="example-text">"This Sale Deed is executed on this 15th day of October, 2024."</p>
+      </div>
+    </div>
+  </div>
 
-    <section>
-        <h2 class="section-title">Typical Sections</h2>
-        <ul>
-            <li>Description of the Parties</li>
-            <li>Property Description</li>
-            <li>Consideration/Gift Clause</li>
-            <li>Transfer of Ownership Clause</li>
-            <li>Witness Attestation</li>
-            <li>Registration Details</li>
-            <li>Schedule of Property</li>
-        </ul>
-    </section>
+  <!-- KEY VISUAL FEATURES -->
+  <div class="ref-card" id="visual">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-eye"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Key Visual Features</div>
+        <div class="card-subtitle">Visual cues to identify a Title Deed</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="visual-features-grid">
+        <div class="visual-feature-item"><i class="fas fa-stamp"></i> Revenue stamps or franking</div>
+        <div class="visual-feature-item"><i class="fas fa-certificate"></i> Seal of Sub-Registrar</div>
+        <div class="visual-feature-item"><i class="fas fa-signature"></i> Notary Public seal &amp; signature</div>
+        <div class="visual-feature-item"><i class="fas fa-hashtag"></i> Registration number and date</div>
+        <div class="visual-feature-item"><i class="fas fa-font"></i> Typed or handwritten text</div>
+        <div class="visual-feature-item"><i class="fas fa-gavel"></i> Legal jargon and specific clauses</div>
+      </div>
+    </div>
+  </div>
 
-    <section>
-      <h2 class="section-title">Reference Link</h2>
-      <p><a href="https://www.nobroker.in/blog/sale-deed-registration/" target="_blank">Sale Deed Registration Guide</a></p>
-    </section>
+  <!-- LAYOUT DESCRIPTION -->
+  <div class="ref-card">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-file-alt"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Layout Description</div>
+        <div class="card-subtitle">How a Title Deed usually looks</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="layout-desc">
+        <i class="fas fa-info-circle"></i>
+        <p>Typically printed on stamp paper, with multiple pages. Each page will bear signatures and seals of the parties involved and the registering authority.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPICAL SECTIONS -->
+  <div class="ref-card">
+    <div class="card-head">
+      <div class="card-head-icon"><i class="fas fa-list-ul"></i></div>
+      <div class="card-head-text">
+        <div class="card-title">Typical Sections</div>
+        <div class="card-subtitle">Standard structure of a Title Deed</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="sections-list">
+        <li>Description of the Parties</li>
+        <li>Property Description</li>
+        <li>Consideration / Gift Clause</li>
+        <li>Transfer of Ownership Clause</li>
+        <li>Witness Attestation</li>
+        <li>Registration Details</li>
+        <li>Schedule of Property</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- REFERENCE LINK -->
+  <div class="ref-link-card">
+    <div class="ref-link-text">
+      <div class="ref-link-label">External Resource</div>
+      <div class="ref-link-title">Sale Deed Registration Guide</div>
+    </div>
+    <a href="https://www.nobroker.in/blog/sale-deed-registration/" target="_blank" class="ref-link-btn">
+      <i class="fas fa-external-link-alt"></i> Visit Guide
+    </a>
+  </div>
+
+</div><!-- /page-body -->
 
 </body>
 </html>

@@ -1,33 +1,47 @@
-import google.generativeai as genai
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import json
 from pathlib import Path
 
 load_dotenv()
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
+OPENAI_MODEL = os.getenv('OPENAI_MODEL')
+
 
 class DocumentReferenceGenerator:
-    def __init__(self, api_key=GEMINI_API_KEY):
+    def __init__(self, api_key=OPENAI_API_KEY):
         self.api_key = api_key
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel("gemini-2.0-flash")
-        
-    def generate_reference_html(self, doc_name, query_context, required_elements=None, visual_reference=None):
+
+        self.client = OpenAI(
+            api_key=self.api_key,
+            base_url=OPENAI_BASE_URL
+        )
+
+        self.model = OPENAI_MODEL
+
+    def generate_reference_html(
+        self,
+        doc_name,
+        query_context,
+        required_elements=None,
+        visual_reference=None
+    ):
         """
         Generate HTML reference document for a specific document type
-        
+
         Args:
-            doc_name (str): Name of the document (e.g., "Title deed of the property")
+            doc_name (str): Name of the document
             query_context (str): The legal query context
-            required_elements (list): List of required elements for this document
+            required_elements (list): List of required elements
             visual_reference (dict): Visual reference information
-        
+
         Returns:
             str: Generated HTML content
         """
-        
-        # Build the system prompt
+
         system_prompt = f"""
 You are an expert legal document reference generator for legal documents.
 
@@ -40,7 +54,7 @@ Required Elements (if available):
 Visual Reference Information (if available):
 {json.dumps(visual_reference or {}, indent=2)}
 
-Generate a comprehensive HTML visual reference similar to image or how it looks if seen in direct using stylings for "{doc_name}" that includes Sample Format/Template 
+Generate a comprehensive HTML visual reference similar to image or how it looks if seen in direct using stylings for "{doc_name}" that includes Sample Format/Template
 
 Requirements for HTML output:
 - Use modern, clean CSS styling
@@ -57,66 +71,88 @@ The HTML should be a standalone, complete document that can be saved as doc_refe
 """
 
         try:
-            response = self.model.generate_content([{"text": system_prompt}])
-            
-            if hasattr(response, "text"):
-                html_content = response.text
-            else:
-                html_content = response.candidates[0].content.parts[0].text
-                
+
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": system_prompt
+                    }
+                ],
+                temperature=0.7
+            )
+
+            html_content = response.choices[0].message.content
+
             # Clean up the response to ensure it's valid HTML
             html_content = self._clean_html_response(html_content)
-            
+
             return html_content
-            
+
         except Exception as e:
             return self._generate_error_html(doc_name, str(e))
-    
-    def save_reference_html(self, html_content, output_path="templates/doc_reference.html"):
+
+    def save_reference_html(
+        self,
+        html_content,
+        output_path="templates/doc_reference.html"
+    ):
         """
         Save the generated HTML content to a file
-        
+
         Args:
             html_content (str): The HTML content to save
             output_path (str): Path where to save the file
         """
+
         try:
             # Ensure the directory exists
-            Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-            
+            Path(output_path).parent.mkdir(
+                parents=True,
+                exist_ok=True
+            )
+
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(html_content)
-            
+
             return True
+
         except Exception as e:
             print(f"Error saving HTML file: {e}")
             return False
-    
+
     def _clean_html_response(self, html_content):
         """Clean and validate HTML response"""
-        # Remove any markdown code block indicators
+
+        # Remove markdown code block indicators
         html_content = html_content.strip()
+
         if html_content.startswith("```html"):
             html_content = html_content[7:]
+
         if html_content.startswith("```"):
             html_content = html_content[3:]
+
         if html_content.endswith("```"):
             html_content = html_content[:-3]
-        
-        # Ensure it starts with proper HTML declaration
+
+        # Ensure proper HTML declaration
         if not html_content.strip().startswith("<!DOCTYPE html>"):
             html_content = "<!DOCTYPE html>\n" + html_content
-        
+
         return html_content.strip()
-    
+
     def _generate_error_html(self, doc_name, error_message):
-        """Generate a fallback HTML in case of errors"""
+        """Generate fallback HTML in case of errors"""
+
         return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document Reference - {doc_name}</title>
+
     <style>
         body {{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -125,6 +161,7 @@ The HTML should be a standalone, complete document that can be saved as doc_refe
             padding: 20px;
             background-color: #f8f9fa;
         }}
+
         .error-container {{
             background: #f8d7da;
             border: 1px solid #f5c6cb;
@@ -133,19 +170,32 @@ The HTML should be a standalone, complete document that can be saved as doc_refe
             border-radius: 8px;
             text-align: center;
         }}
+
         .error-icon {{
             font-size: 48px;
             margin-bottom: 20px;
         }}
     </style>
 </head>
+
 <body>
     <div class="error-container">
         <div class="error-icon">⚠️</div>
+
         <h2>Reference Generation Error</h2>
-        <p>Unable to generate reference for: <strong>{doc_name}</strong></p>
-        <p><em>Error: {error_message}</em></p>
-        <p>Please try again or contact support if the issue persists.</p>
+
+        <p>
+            Unable to generate reference for:
+            <strong>{doc_name}</strong>
+        </p>
+
+        <p>
+            <em>Error: {error_message}</em>
+        </p>
+
+        <p>
+            Please try again or contact support if the issue persists.
+        </p>
     </div>
 </body>
 </html>"""
@@ -155,63 +205,74 @@ The HTML should be a standalone, complete document that can be saved as doc_refe
 def handle_document_reference_request(doc_name, query_data):
     """
     Handle the document reference generation request
-    
+
     Args:
-        doc_name (str): Name of the document from the request
-        query_data (dict): Query data from database containing context and documents info
-    
+        doc_name (str): Name of the document
+        query_data (dict): Query data from database
+
     Returns:
         dict: Response with success status and file path
     """
+
     try:
-        # Initialize the generator
+        # Initialize generator
         generator = DocumentReferenceGenerator()
-        
+
         # Extract information from query data
         query_context = query_data.get('text', '')
-        
+
         # Find the specific document and its details
         documents = query_data.get('documents', [])
+
         required_elements = None
         visual_reference = None
-        
-        # If documents is a list of objects with more details
+
+        # If documents contain detailed objects
         if documents and isinstance(documents[0], dict):
+
             for doc in documents:
+
                 if doc.get('name') == doc_name or doc == doc_name:
-                    required_elements = doc.get('required_elements', [])
-                    visual_reference = doc.get('visual_reference', {})
+                    required_elements = doc.get(
+                        'required_elements',
+                        []
+                    )
+
+                    visual_reference = doc.get(
+                        'visual_reference',
+                        {}
+                    )
+
                     break
-        
-        # Generate the HTML reference
+
+        # Generate HTML reference
         html_content = generator.generate_reference_html(
             doc_name=doc_name,
             query_context=query_context,
             required_elements=required_elements,
             visual_reference=visual_reference
         )
-        
-        # Save to doc_reference.html
+
+        # Save generated HTML
         success = generator.save_reference_html(html_content)
-        
+
         if success:
             return {
                 'success': True,
                 'message': f'Reference generated successfully for {doc_name}',
                 'file_path': 'templates/doc_reference.html'
             }
+
         else:
             return {
                 'success': False,
                 'message': 'Failed to save reference file',
                 'error': 'File save error'
             }
-            
+
     except Exception as e:
         return {
             'success': False,
             'message': f'Failed to generate reference for {doc_name}',
             'error': str(e)
         }
-
-

@@ -1,12 +1,16 @@
 from dotenv import load_dotenv
 import os
-from google import genai
+from openai import OpenAI
 
 load_dotenv()
 
+
 class Chatbot:
     def __init__(self, api_key=None, user_message="", query=""):
-        self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
+        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
+        self.base_url = os.environ.get("OPENAI_BASE_URL")
+        self.model_name = os.environ.get("OPENAI_MODEL")
+
         self.messages = []
         self.query = query
         self.user_message = user_message
@@ -21,17 +25,22 @@ class Chatbot:
             "role": "user",
             "content": self.user_message
         })
-        client = genai.Client(api_key=self.api_key)
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=self.messages
+
+        client = OpenAI(
+            api_key=self.api_key,
+            base_url=self.base_url
         )
 
-        assistant_reply = response.text
+        response = client.chat.completions.create(
+            model=self.model_name,
+            messages=self.messages
+        )
+
+        assistant_reply = response.choices[0].message.content
+
         self.messages.append({
             "role": "assistant",
             "content": assistant_reply
         })
 
         return assistant_reply
-

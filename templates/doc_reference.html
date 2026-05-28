@@ -2,608 +2,292 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Title Deed Reference | Soven Legal</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<title>Certified Copy of Original Title Deed (Sale Deed / Patta) – Visual Reference</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
-:root {
-  --cream: #F8F5F0;
-  --warm-white: #FDFCFA;
-  --ink: #1A1814;
-  --ink-muted: #4A4640;
-  --ink-light: #8A8480;
-  --gold: #B8922A;
-  --gold-light: #D4A843;
-  --gold-pale: #F5EDD8;
-  --sage: #4A5E52;
-  --sage-light: #EEF2EF;
-  --border: #E4DDD4;
-  --border-dark: #C8BFB4;
-
-  /* section accent colors — preserved semantically */
-  --accent-parties:      #B8922A; /* gold  */
-  --accent-property:     #4A5E52; /* sage  */
-  --accent-consideration:#C0392B; /* red   */
-  --accent-transfer:     #2980b9; /* blue  */
-  --accent-registration: #6c757d; /* gray  */
-  --accent-attestation:  #2980b9; /* blue  */
-}
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  background: var(--cream);
-  color: var(--ink);
-  line-height: 1.7;
-}
-
-/* ── PAGE HEADER ── */
-.page-header {
-  background: var(--ink);
-  position: relative;
-  overflow: hidden;
-  padding: 52px 60px 48px;
-}
-.page-header-bg {
-  position: absolute; inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&q=70&auto=format&fit=crop');
-  background-size: cover; background-position: center;
-  opacity: 0.07; pointer-events: none;
-}
-.page-header-tint {
-  position: absolute; inset: 0;
-  background: linear-gradient(120deg, rgba(26,24,20,0.97) 0%, rgba(26,24,20,0.80) 100%);
-}
-.page-header-inner { position: relative; z-index: 1; max-width: 860px; }
-.header-eyebrow {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--gold-light); font-weight: 400; margin-bottom: 18px;
-}
-.header-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold-light); }
-.page-header h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.8rem; font-weight: 400; line-height: 1.1;
-  color: white; margin-bottom: 14px;
-}
-.page-header h1 em { font-style: italic; color: var(--gold-light); }
-.page-header p {
-  font-size: 0.9rem; color: rgba(255,255,255,0.5);
-  font-weight: 300; max-width: 540px; line-height: 1.75;
-}
-.header-back {
-  position: absolute; top: 28px; right: 40px; z-index: 2;
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
-  color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s;
-}
-.header-back:hover { color: var(--gold-light); }
-.header-back i { font-size: 0.68rem; }
-
-/* ── QUICK NAV ── */
-.quick-nav {
-  background: white; border-bottom: 1px solid var(--border);
-  padding: 0 60px;
-  display: flex; align-items: center; gap: 0;
-  overflow-x: auto; position: sticky; top: 0; z-index: 100;
-}
-.quick-nav a {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 14px 16px;
-  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-light); text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s; white-space: nowrap;
-}
-.quick-nav a:hover { color: var(--ink); border-bottom-color: var(--gold); }
-.quick-nav a i { font-size: 0.7rem; }
-
-/* ── MAIN LAYOUT ── */
-.page-body { max-width: 1000px; margin: 0 auto; padding: 52px 40px 80px; display: flex; flex-direction: column; gap: 20px; }
-
-/* ── SECTION CARDS ── */
-.ref-card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: box-shadow 0.3s;
-  position: relative;
-}
-.ref-card:hover { box-shadow: 0 4px 24px rgba(26,24,20,0.07); }
-.ref-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0;
-  width: 4px; height: 100%;
-  background: var(--accent, var(--gold));
-}
-
-/* accent variants */
-.ref-card.parties      { --accent: var(--accent-parties); }
-.ref-card.property     { --accent: var(--accent-property); }
-.ref-card.consideration{ --accent: var(--accent-consideration); }
-.ref-card.transfer     { --accent: var(--accent-transfer); }
-.ref-card.registration { --accent: var(--accent-registration); }
-.ref-card.attestation  { --accent: var(--accent-attestation); }
-
-.card-head {
-  display: flex; align-items: center; gap: 14px;
-  padding: 20px 24px 18px 28px;
-  border-bottom: 1px solid var(--border);
-}
-.card-head-icon {
-  width: 38px; height: 38px; border-radius: 6px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--gold-pale);
-}
-.card-head-icon i { font-size: 0.9rem; color: var(--gold); }
-.ref-card.property     .card-head-icon { background: var(--sage-light); }
-.ref-card.property     .card-head-icon i { color: var(--sage); }
-.ref-card.consideration .card-head-icon { background: #fdf0ee; }
-.ref-card.consideration .card-head-icon i { color: #C0392B; }
-.ref-card.transfer     .card-head-icon { background: #eaf3fb; }
-.ref-card.transfer     .card-head-icon i { color: #2980b9; }
-.ref-card.registration .card-head-icon { background: #f4f4f4; }
-.ref-card.registration .card-head-icon i { color: #6c757d; }
-.ref-card.attestation  .card-head-icon { background: #eaf3fb; }
-.ref-card.attestation  .card-head-icon i { color: #2980b9; }
-
-.card-head-text {}
-.card-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.2rem; font-weight: 500; color: var(--ink); line-height: 1.2;
-}
-.card-subtitle { font-size: 0.78rem; color: var(--ink-light); font-weight: 300; margin-top: 2px; }
-
-.card-body { padding: 20px 24px 20px 28px; display: flex; flex-direction: column; gap: 16px; }
-
-/* ── CHECKLIST ── */
-.checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.checklist li {
-  display: flex; align-items: flex-start; gap: 10px;
-  font-size: 0.85rem; color: var(--ink-muted); font-weight: 300;
-  padding-bottom: 8px; border-bottom: 1px solid var(--border);
-  line-height: 1.6;
-}
-.checklist li:last-child { border-bottom: none; padding-bottom: 0; }
-.check-icon {
-  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
-  background: var(--sage-light); display: flex; align-items: center; justify-content: center;
-}
-.check-icon i { font-size: 0.55rem; color: var(--sage); }
-.important { color: var(--ink); font-weight: 500; }
-
-/* ── EXAMPLE BOX ── */
-.example-box {
-  background: var(--cream); border: 1px solid var(--border);
-  border-left: 3px solid var(--gold); border-radius: 4px;
-  padding: 14px 16px;
-}
-.example-label {
-  font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--gold); font-weight: 400; margin-bottom: 6px;
-}
-.example-text {
-  font-size: 0.83rem; color: var(--ink-muted); font-style: italic;
-  line-height: 1.7; font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
-}
-.property-description { white-space: pre-line; }
-
-/* ── KEY VISUAL FEATURES ── */
-.visual-features-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;
-}
-.visual-feature-item {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--cream); border: 1px solid var(--border); border-radius: 5px;
-  padding: 10px 12px; font-size: 0.8rem; color: var(--ink-muted); font-weight: 300;
-}
-.visual-feature-item i { font-size: 0.78rem; color: var(--gold); flex-shrink: 0; }
-
-/* ── TYPICAL SECTIONS LIST ── */
-.sections-list {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;
-  list-style: none;
-}
-.sections-list li {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--cream); border: 1px solid var(--border); border-radius: 5px;
-  padding: 10px 14px; font-size: 0.82rem; color: var(--ink-muted); font-weight: 300;
-}
-.sections-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-light); flex-shrink: 0; }
-
-/* ── LAYOUT DESCRIPTION ── */
-.layout-desc {
-  display: flex; align-items: flex-start; gap: 14px;
-  background: var(--cream); border: 1px solid var(--border); border-radius: 6px;
-  padding: 16px 18px;
-}
-.layout-desc i { font-size: 1.1rem; color: var(--ink-light); margin-top: 2px; }
-.layout-desc p { font-size: 0.85rem; color: var(--ink-muted); font-weight: 300; line-height: 1.7; }
-
-/* ── REFERENCE LINK ── */
-.ref-link-card {
-  display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  background: var(--ink); border-radius: 8px; padding: 24px 28px;
-}
-.ref-link-card .ref-link-text {}
-.ref-link-card .ref-link-label {
-  font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: rgba(255,255,255,0.4); margin-bottom: 6px;
-}
-.ref-link-card .ref-link-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.2rem; font-weight: 400; color: white;
-}
-.ref-link-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 22px; background: var(--gold); color: white;
-  border: none; border-radius: 4px; text-decoration: none;
-  font-family: 'DM Sans', sans-serif; font-size: 0.74rem;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  transition: background 0.2s; white-space: nowrap;
-}
-.ref-link-btn:hover { background: #9A7A22; }
-.ref-link-btn i { font-size: 0.7rem; }
-
-/* ── PRINT ── */
-@media print {
-  .quick-nav, .page-header, .header-back { display: none; }
-  .page-body { padding: 20px; }
-  .ref-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
-  .ref-card::before { display: none; }
-}
-
-@media (max-width: 680px) {
-  .page-header { padding: 36px 24px 32px; }
-  .page-header h1 { font-size: 2rem; }
-  .page-body { padding: 32px 20px 60px; }
-  .quick-nav { padding: 0 20px; }
-  .card-body, .card-head { padding-left: 20px; }
-}
+    :root{
+        --clr-primary:#0d47a1;
+        --clr-secondary:#1565c0;
+        --clr-accent:#ff6f00;
+        --clr-bg:#f9f9f9;
+        --clr-section:#e3f2fd;
+        --clr-border:#cfd8dc;
+        --clr-text:#212121;
+        --clr-muted:#757575;
+        --font-main:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box;}
+    body{
+        margin:0;
+        font-family:var(--font-main);
+        background:#fff;
+        color:var(--clr-text);
+        line-height:1.5;
+    }
+    .container{
+        max-width:900px;
+        margin:30px auto;
+        padding:20px;
+        background:#fff;
+        border:1px solid var(--clr-border);
+        box-shadow:0 2px 8px rgba(0,0,0,.1);
+    }
+    h1{
+        text-align:center;
+        font-size:2rem;
+        color:var(--clr-primary);
+        margin-bottom:0.2em;
+        position:relative;
+    }
+    h1::after{
+        content:"Certified Copy";
+        font-size:0.6rem;
+        color:var(--clr-muted);
+        position:absolute;
+        right:0;
+        bottom:-0.6em;
+    }
+    .section{
+        background:var(--clr-section);
+        margin:20px 0;
+        padding:15px 20px;
+        border-left:5px solid var(--clr-primary);
+        position:relative;
+    }
+    .section:hover{
+        background:#fffde7;
+    }
+    .section h2{
+        margin-top:0;
+        font-size:1.3rem;
+        color:var(--clr-secondary);
+        display:flex;
+        align-items:center;
+    }
+    .section h2 i{
+        margin-right:8px;
+        color:var(--clr-accent);
+    }
+    .field{
+        margin:8px 0;
+        display:flex;
+        flex-wrap:wrap;
+        align-items:center;
+    }
+    .field label{
+        flex:0 0 180px;
+        font-weight:600;
+        color:var(--clr-muted);
+    }
+    .field span{
+        flex:1;
+        padding:4px 8px;
+        min-height:1.2em;
+        border-bottom:1px dotted var(--clr-muted);
+    }
+    .field span::after{
+        content:"\00a0"; /* keep height */
+    }
+    .info{
+        margin-left:6px;
+        color:var(--clr-accent);
+        cursor:pointer;
+    }
+    .tooltip{
+        visibility:hidden;
+        background:#212121;
+        color:#fff;
+        text-align:left;
+        border-radius:4px;
+        padding:6px 10px;
+        position:absolute;
+        z-index:10;
+        width:220px;
+        top:100%;
+        left:0;
+        opacity:0;
+        transition:opacity .2s;
+        font-size:0.85rem;
+    }
+    .info:hover + .tooltip,
+    .tooltip:hover{
+        visibility:visible;
+        opacity:1;
+    }
+    .signature-block{
+        display:flex;
+        justify-content:space-between;
+        margin-top:30px;
+    }
+    .sign-box{
+        width:45%;
+        border-top:1px solid var(--clr-muted);
+        text-align:center;
+        padding-top:6px;
+        font-size:0.9rem;
+    }
+    .seal{
+        margin-top:30px;
+        text-align:center;
+    }
+    .seal img{
+        max-width:120px;
+        opacity:0.8;
+    }
+    .stamp{
+        margin-top:15px;
+        text-align:center;
+        font-weight:600;
+        font-size:1.1rem;
+        color:var(--clr-accent);
+    }
+    .footer{
+        text-align:center;
+        font-size:0.8rem;
+        color:var(--clr-muted);
+        margin-top:30px;
+        border-top:1px solid var(--clr-border);
+        padding-top:10px;
+    }
+    @media print{
+        body{background:#fff;}
+        .container{border:none;box-shadow:none;}
+        .section{border-left:3px solid var(--clr-primary);}
+        .info,.tooltip{display:none;}
+        .seal img{opacity:1;}
+    }
 </style>
 </head>
 <body>
+<div class="container">
+    <h1>SALE DEED (PATTA) – Certified Copy</h1>
 
-<!-- PAGE HEADER -->
-<div class="page-header">
-  <div class="page-header-bg"></div>
-  <div class="page-header-tint"></div>
-  <a href="javascript:history.back()" class="header-back"><i class="fas fa-arrow-left"></i> Back</a>
-  <div class="page-header-inner">
-    <div class="header-eyebrow">Document Reference Guide</div>
-    <h1>Title Deed <em>Reference</em></h1>
-    <p>Sale Deed · Gift Deed · Partition Deed · Will — a complete checklist of required elements, visual features, and registration details.</p>
-  </div>
-</div>
+    <!-- Registration Details -->
+    <div class="section" id="reg-details">
+        <h2><i class="fa-solid fa-hashtag"></i>Registration Details</h2>
+        <div class="field">
+            <label>Regn. No.:</label>
+            <span>12345/2020</span>
+            <i class="fa-solid fa-circle-info info"></i>
+            <div class="tooltip">Unique registration number assigned by the Sub‑Registrar.</div>
+        </div>
+        <div class="field">
+            <label>Date of Registration:</label>
+            <span>15‑March‑2020</span>
+            <i class="fa-solid fa-circle-info info"></i>
+            <div class="tooltip">Date mentioned on the official register.</div>
+        </div>
+    </div>
 
-<!-- QUICK NAV -->
-<nav class="quick-nav">
-  <a href="#parties"><i class="fas fa-users"></i> Parties</a>
-  <a href="#property"><i class="fas fa-map-marker-alt"></i> Property</a>
-  <a href="#consideration"><i class="fas fa-coins"></i> Consideration</a>
-  <a href="#transfer"><i class="fas fa-exchange-alt"></i> Transfer</a>
-  <a href="#chain"><i class="fas fa-link"></i> Chain of Title</a>
-  <a href="#registration"><i class="fas fa-stamp"></i> Registration</a>
-  <a href="#attestation"><i class="fas fa-pen-nib"></i> Signatures</a>
-  <a href="#stamp"><i class="fas fa-receipt"></i> Stamp Duty</a>
-  <a href="#mutation"><i class="fas fa-file-signature"></i> Mutation</a>
-  <a href="#execution"><i class="fas fa-calendar"></i> Execution</a>
-  <a href="#visual"><i class="fas fa-eye"></i> Visual Features</a>
-</nav>
+    <!-- Parties Details -->
+    <div class="section" id="parties">
+        <h2><i class="fa-solid fa-people-group"></i>Parties’ Details</h2>
+        <div class="field">
+            <label>Seller (S/o):</label>
+            <span>Mr. <strong>Ramesh Kumar</strong> (S/o <em>Shri. Suresh Kumar</em>)</span>
+            <i class="fa-solid fa-circle-info info"></i>
+            <div class="tooltip">Full name of the seller with father’s name.</div>
+        </div>
+        <div class="field">
+            <label>Buyer (S/o):</label>
+            <span>Mr. <strong>Anil Sharma</strong> (S/o <em>Shri. Rajesh Sharma</em>)</span>
+            <i class="fa-solid fa-circle-info info"></i>
+            <div class="tooltip">Full name of the buyer with father’s name.</div>
+        </div>
+        <div class="field">
+            <label>Address of Seller:</label>
+            <span>123, Gopal Nagar, Taluka – <em>Hosur</em>, District – <em>Krishnagiri</em></span>
+        </div>
+        <div class="field">
+            <label>Address of Buyer:</label>
+            <span>78, Lakshmi Enclave, Taluka – <em>Hosur</em>, District – <em>Krishnagiri</em></span>
+        </div>
+    </div>
 
-<!-- BODY -->
-<div class="page-body">
+    <!-- Consideration -->
+    <div class="section" id="consideration">
+        <h2><i class="fa-solid fa-coins"></i>Consideration</h2>
+        <div class="field">
+            <label>Sale Consideration:</label>
+            <span>₹ 25,00,000 (Rupees Twenty‑Five Lakhs only)</span>
+        </div>
+        <div class="field">
+            <label>Mode of Payment:</label>
+            <span>Bank Transfer – Account No. XXXXX1234</span>
+        </div>
+    </div>
 
-  <!-- PARTIES -->
-  <div class="ref-card parties" id="parties">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-users"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Names of the Parties Involved</div>
-        <div class="card-subtitle">Details about the individuals or entities involved in the deed</div>
-      </div>
+    <!-- Property Description -->
+    <div class="section" id="property">
+        <h2><i class="fa-solid fa-map-location-dot"></i>Property Description</h2>
+        <div class="field">
+            <label>Survey No.:</label>
+            <span>78/12</span>
+        </div>
+        <div class="field">
+            <label>Village / Town:</label>
+            <span>Vellore</span>
+        </div>
+        <div class="field">
+            <label>Taluka:</label>
+            <span>Vellore</span>
+        </div>
+        <div class="field">
+            <label>District:</label>
+            <span>Vellore</span>
+        </div>
+        <div class="field">
+            <label>Area:</label>
+            <span>2.75 Acres (≈ 11,124.5 sq. m)</span>
+        </div>
+        <div class="field">
+            <label>Boundaries:</label>
+            <span>North – Plot No. 78/13; South – River Kaveri; East – Road No. 5; West – Plot No. 78/11</span>
+        </div>
     </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li>
-          <div class="check-icon"><i class="fas fa-check"></i></div>
-          <span>Seller / Donor / Partitioner / Testator — <span class="important">Full name, address, and PAN details.</span></span>
-        </li>
-        <li>
-          <div class="check-icon"><i class="fas fa-check"></i></div>
-          <span>Buyer / Donee / Other Partitioner / Beneficiary — <span class="important">Full name, address, and PAN details.</span></span>
-        </li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"This Sale Deed made and executed on this 15th day of October, 2024, by Mr. John Doe, residing at..."</p>
-      </div>
-    </div>
-  </div>
 
-  <!-- PROPERTY -->
-  <div class="ref-card property" id="property">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-map-marked-alt"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Complete Property Description</div>
-        <div class="card-subtitle">A detailed description of the property being transferred</div>
-      </div>
+    <!-- Schedule of Land -->
+    <div class="section" id="schedule">
+        <h2><i class="fa-solid fa-list"></i>Schedule of Land</h2>
+        <p style="margin:8px 0 0 0;">
+            The Schedule of Land attached herewith (Annexure‑A) forms an integral part of this deed and
+            describes the extent, measurement and boundaries of the land in detail.
+        </p>
+        <div class="seal">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2NjYyIgc3Ryb2tlLXdpZHRoPSI1Ii8+PHRleHQgeD0iNjAiIHk9IjY2IiBmb250LXNpemU9IjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjY2NjIj5TZWxlPC90ZXh0Pjwvc3ZnPg==" alt="Sub‑Registrar Seal">
+            <div style="font-size:0.8rem;color:#555;margin-top:4px;">Sub‑Registrar Office Seal</div>
+        </div>
     </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Area — <span class="important">Specify the exact area (e.g., in square feet, acres).</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Boundaries — <span class="important">North, South, East, and West boundaries clearly defined.</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Survey Number — <span class="important">As per the land records.</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Location — <span class="important">Village, Taluk, District, and State.</span></span></li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text property-description">"All that piece and parcel of land bearing Survey No. 123/4, situated at Village ABC, Taluk XYZ, District PQR, State Tamil Nadu, measuring an extent of 2400 sq. ft. and bounded on the North by..., on the South by..., on the East by..., and on the West by..."</p>
-      </div>
-    </div>
-  </div>
 
-  <!-- CONSIDERATION -->
-  <div class="ref-card consideration" id="consideration">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-coins"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Consideration Amount / Value of Gift / Property</div>
-        <div class="card-subtitle">The monetary value exchanged or estimated value of the gift or property</div>
-      </div>
+    <!-- Signatures -->
+    <div class="section" id="signatures">
+        <h2><i class="fa-solid fa-pen-fancy"></i>Signatures & Witnesses</h2>
+        <div class="signature-block">
+            <div class="sign-box">
+                Seller’s Signature<br>
+                <span style="font-size:0.75rem;color:#777;">(Ramesh Kumar)</span>
+            </div>
+            <div class="sign-box">
+                Buyer’s Signature<br>
+                <span style="font-size:0.75rem;color:#777;">(Anil Sharma)</span>
+            </div>
+        </div>
+        <div style="margin-top:20px;">
+            <div class="field">
+                <label>Witness 1:</label>
+                <span>Shri. Mohan Singh</span>
+            </div>
+            <div class="field">
+                <label>Witness 2:</label>
+                <span>Shri. Vijay Kumar</span>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Sale Deed — <span class="important">The agreed-upon sale price.</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Gift Deed — <span class="important">The estimated market value of the gifted property.</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Partition Deed / Will — <span class="important">Value of the respective share.</span></span></li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example — Sale Deed</div>
-        <p class="example-text">"The Sale Consideration for this transaction is Rs. 50,00,000 (Rupees Fifty Lakhs Only)."</p>
-      </div>
-    </div>
-  </div>
 
-  <!-- TRANSFER -->
-  <div class="ref-card transfer" id="transfer">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-exchange-alt"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Clear and Unambiguous Transfer of Ownership Clause</div>
-        <div class="card-subtitle">A statement explicitly transferring ownership of the property</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li>
-          <div class="check-icon"><i class="fas fa-check"></i></div>
-          <span class="important">Must clearly state the transfer of all rights, title, and interest.</span>
-        </li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"The Seller hereby conveys, transfers, and assigns all his/her rights, title, and interest in the said property to the Buyer absolutely and forever."</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- CHAIN OF TITLE -->
-  <div class="ref-card" id="chain">
-    <div class="card-head">
-      <div class="card-head-icon" style="background:#f0eeff;"><i class="fas fa-link" style="color:#6c5ce7;"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Chain of Title</div>
-        <div class="card-subtitle">Previous ownership history, if available</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li>
-          <div class="check-icon"><i class="fas fa-check"></i></div>
-          <span>Previous Owners — <span class="important">Names and relevant document references.</span></span>
-        </li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"The said property was originally owned by Mr. XYZ, who sold it to Mr. ABC vide Sale Deed registered as Document No. 1234/2010..."</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- REGISTRATION -->
-  <div class="ref-card registration" id="registration">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-stamp"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Registration Details</div>
-        <div class="card-subtitle">Information about registration at the Sub-Registrar Office</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Book Number</span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Volume Number</span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Page Numbers</span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Registration Date — <span class="important">Date of registration at the SRO.</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Sub-Registrar Office Details — <span class="important">Name and address of the SRO.</span></span></li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"Registered at the Sub-Registrar Office, Chennai South, as Document No. 5678/2024, in Book 1, Volume 234, Pages 123–130, dated 20th October 2024."</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ATTESTATION -->
-  <div class="ref-card attestation" id="attestation">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-pen-nib"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Signatures of All Parties and Witnesses</div>
-        <div class="card-subtitle">Signatures of the involved parties and witnesses</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Seller / Donor / Partitioner / Testator — <span class="important">Signature and full name.</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Buyer / Donee / Other Partitioner / Beneficiary — <span class="important">Signature and full name.</span></span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Witnesses — <span class="important">At least two witnesses with signatures and full names.</span></span></li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"Signed, Sealed, and Delivered by the within named Seller, Mr. John Doe, in the presence of:"</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- STAMP DUTY -->
-  <div class="ref-card" id="stamp">
-    <div class="card-head">
-      <div class="card-head-icon" style="background:#fff3cd;"><i class="fas fa-receipt" style="color:#856404;"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Stamp Duty Paid Details</div>
-        <div class="card-subtitle">Information regarding the stamp duty paid for deed registration</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Amount</span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Receipt Number</span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Date of Payment</span></li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"Stamp duty of Rs. XX,XXX/- paid vide receipt no. ABC1234567, dated DD/MM/YYYY"</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- MUTATION -->
-  <div class="ref-card" id="mutation">
-    <div class="card-head">
-      <div class="card-head-icon" style="background:#e8f5e9;"><i class="fas fa-file-signature" style="color:#2e7d32;"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Mutation Records</div>
-        <div class="card-subtitle">Information about mutation in land records</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Mutation Order Number</span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Date of Mutation</span></li>
-        <li><div class="check-icon"><i class="fas fa-check"></i></div><span>Authority</span></li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"Mutation Order No. 1234/2024 dated DD/MM/YYYY issued by Talathi Office, ABC Village."</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- DATE OF EXECUTION -->
-  <div class="ref-card" id="execution">
-    <div class="card-head">
-      <div class="card-head-icon" style="background:#fce4ec;"><i class="fas fa-calendar-alt" style="color:#c62828;"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Date of Execution</div>
-        <div class="card-subtitle">The date on which the deed was executed (signed)</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="checklist">
-        <li>
-          <div class="check-icon"><i class="fas fa-check"></i></div>
-          <span>Date — <span class="important">The exact date on which the deed was signed by all parties.</span></span>
-        </li>
-      </ul>
-      <div class="example-box">
-        <div class="example-label">Example</div>
-        <p class="example-text">"This Sale Deed is executed on this 15th day of October, 2024."</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- KEY VISUAL FEATURES -->
-  <div class="ref-card" id="visual">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-eye"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Key Visual Features</div>
-        <div class="card-subtitle">Visual cues to identify a Title Deed</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="visual-features-grid">
-        <div class="visual-feature-item"><i class="fas fa-stamp"></i> Revenue stamps or franking</div>
-        <div class="visual-feature-item"><i class="fas fa-certificate"></i> Seal of Sub-Registrar</div>
-        <div class="visual-feature-item"><i class="fas fa-signature"></i> Notary Public seal &amp; signature</div>
-        <div class="visual-feature-item"><i class="fas fa-hashtag"></i> Registration number and date</div>
-        <div class="visual-feature-item"><i class="fas fa-font"></i> Typed or handwritten text</div>
-        <div class="visual-feature-item"><i class="fas fa-gavel"></i> Legal jargon and specific clauses</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LAYOUT DESCRIPTION -->
-  <div class="ref-card">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-file-alt"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Layout Description</div>
-        <div class="card-subtitle">How a Title Deed usually looks</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="layout-desc">
-        <i class="fas fa-info-circle"></i>
-        <p>Typically printed on stamp paper, with multiple pages. Each page will bear signatures and seals of the parties involved and the registering authority.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- TYPICAL SECTIONS -->
-  <div class="ref-card">
-    <div class="card-head">
-      <div class="card-head-icon"><i class="fas fa-list-ul"></i></div>
-      <div class="card-head-text">
-        <div class="card-title">Typical Sections</div>
-        <div class="card-subtitle">Standard structure of a Title Deed</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <ul class="sections-list">
-        <li>Description of the Parties</li>
-        <li>Property Description</li>
-        <li>Consideration / Gift Clause</li>
-        <li>Transfer of Ownership Clause</li>
-        <li>Witness Attestation</li>
-        <li>Registration Details</li>
-        <li>Schedule of Property</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- REFERENCE LINK -->
-  <div class="ref-link-card">
-    <div class="ref-link-text">
-      <div class="ref-link-label">External Resource</div>
-      <div class="ref-link-title">Sale Deed Registration Guide</div>
-    </div>
-    <a href="https://www.nobroker.in/blog/sale-deed-registration/" target="_blank" class="ref-link-btn">
-      <i class="fas fa-external-link-alt"></i> Visit Guide
-    </a>
-  </div>
-
-</div><!-- /page-body -->
-
-</body>
-</html>
+    <!-- Stamp Duty & Registration -->
+    <div class="section" id="stamp">
+        <h2><i class="fa-solid fa-stamp"></i>Stamp Duty & Registration</h2>
+        <div class="stamp">₹ 200 (Stamp Duty) – ₹ 500 (Registration Fee)</div>
+        <div class="seal" style="margin-top:10px;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2NjYyIgc3Ryb2tlLXdp

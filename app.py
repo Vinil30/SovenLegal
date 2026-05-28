@@ -6,9 +6,9 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from pymongo import MongoClient
 
-from router import register_routes
-
 load_dotenv()
+
+from router import register_routes
 
 FAISS_INDEX_PATH = os.getenv("FAISS_INDEX_PATH", "faiss_index")
 
@@ -30,7 +30,7 @@ answers_col = db["find_users"]
 lawyers = db["lawyers"]
 bcrypt = Bcrypt(app)
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL")
 
@@ -43,7 +43,7 @@ ROUTE_CONTEXT = {
     "lawyers": lawyers,
     "bcrypt": bcrypt,
     "FAISS_INDEX_PATH": FAISS_INDEX_PATH,
-    "OPENAI_API_KEY": OPENAI_API_KEY,
+    "GROQ_API_KEY": GROQ_API_KEY,
     "OPENAI_BASE_URL": OPENAI_BASE_URL,
     "OPENAI_MODEL": OPENAI_MODEL,
 }

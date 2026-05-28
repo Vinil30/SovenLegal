@@ -6,13 +6,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
 OPENAI_MODEL = os.getenv('OPENAI_MODEL')
 
 
 class GenerateDeadlines:
-    def __init__(self, query, api_key=OPENAI_API_KEY):
+    def __init__(self, query, api_key=GROQ_API_KEY):
         self.query = query
         self.api_key = api_key
 

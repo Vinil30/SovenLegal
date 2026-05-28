@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.environ.get("OPENAI_API_KEY")
+API_KEY = os.environ.get("GROQ_API_KEY")
 BASE_URL = os.environ.get("OPENAI_BASE_URL")
 MODEL_NAME = os.environ.get("OPENAI_MODEL")
 
@@ -177,7 +177,7 @@ Return ONLY a valid JSON object with the following format, and nothing else:
 
             if not self.api_key:
                 raise Exception(
-                    "OPENAI_API_KEY not found in environment variables"
+                    "GROQ_API_KEY not found in environment variables"
                 )
 
             print(f"==== API KEY CHECK ====")

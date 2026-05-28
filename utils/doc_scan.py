@@ -5,24 +5,33 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
-OPENAI_MODEL = "meta-llama/llama-4-maverick-17b-128e-instruct"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+OPENAI_BASE_URL = os.getenv(
+    "OPENAI_BASE_URL",
+    "https://api.groq.com/openai/v1"
+)
+
+OPENAI_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 
 
 class Image_Analyser:
+
     def __init__(
         self,
         query,
         doc_type,
         base64_data,
+        mime_type="image/jpeg",
         required_elements=None,
         visual_reference=None,
-        api_key=OPENAI_API_KEY
+        api_key=GROQ_API_KEY
     ):
+
         self.query = query
         self.doc_type = doc_type
         self.base64_data = base64_data
+        self.mime_type = mime_type or "image/jpeg"
         self.required_elements = required_elements or []
         self.visual_reference = visual_reference or {}
         self.api_key = api_key
@@ -31,7 +40,9 @@ class Image_Analyser:
 You are an expert document verification assistant for Indian legal documents.
 
 Document Type: {self.doc_type}
-Legal Query Context: {self.query}
+
+Legal Query Context:
+{self.query}
 
 Required Elements to Check:
 {json.dumps(self.required_elements, indent=2)}
@@ -40,12 +51,15 @@ Visual Reference Standards:
 {json.dumps(self.visual_reference, indent=2)}
 
 Your tasks:
-1. Verify if this is a genuine {self.doc_type}
+
+1. Verify whether this is a genuine {self.doc_type}
 2. Check if ALL required elements are present and clearly visible
 3. Validate against the visual reference standards
 4. Assess document quality and authenticity markers
 
-Provide your analysis in this JSON format:
+Return STRICTLY VALID JSON ONLY.
+
+JSON FORMAT:
 
 {{
   "document_type_match": true,
@@ -68,11 +82,10 @@ Provide your analysis in this JSON format:
   "detailed_analysis": "analysis text",
   "recommendations": []
 }}
-
-Return ONLY valid JSON.
 """
 
     def analyze_legal_doc(self):
+
         try:
 
             client = OpenAI(
@@ -87,24 +100,34 @@ Return ONLY valid JSON.
 
             response = client.chat.completions.create(
                 model=OPENAI_MODEL,
+
                 messages=[
+                    {
+                        "role": "system",
+                        "content": self.system_prompt
+                    },
                     {
                         "role": "user",
                         "content": [
                             {
                                 "type": "text",
-                                "text": self.system_prompt
+                                "text": "Analyze this legal document."
                             },
                             {
                                 "type": "image_url",
                                 "image_url": {
-                                    "url": f"data:image/jpeg;base64,{image_data}"
+                                    "url": f"data:{self.mime_type};base64,{image_data}"
                                 }
                             }
                         ]
                     }
                 ],
-                temperature=0.2
+
+                temperature=0.2,
+
+                response_format={
+                    "type": "json_object"
+                }
             )
 
             output = response.choices[0].message.content.strip()
@@ -112,16 +135,16 @@ Return ONLY valid JSON.
             try:
                 return json.loads(output)
 
-            except json.JSONDecodeError:
+            except Exception:
+
                 return {
                     "overall_validity": "error",
-                    "detailed_analysis": (
-                        f"Could not parse analysis result: {output}"
-                    ),
+                    "detailed_analysis": output,
                     "error": True
                 }
 
         except Exception as e:
+
             return {
                 "overall_validity": "error",
                 "detailed_analysis": f"Analysis failed: {str(e)}",

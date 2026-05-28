@@ -7,7 +7,7 @@ load_dotenv()
 
 class Chatbot:
     def __init__(self, api_key=None, user_message="", query=""):
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
+        self.api_key = api_key or os.environ.get("GROQ_API_KEY")
         self.base_url = os.environ.get("OPENAI_BASE_URL")
         self.model_name = os.environ.get("OPENAI_MODEL")
 

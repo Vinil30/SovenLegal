@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime
 
 from bson import ObjectId
@@ -11,7 +12,7 @@ def register_routes(app, context):
     answers_col = context["answers_col"]
     queries = db["queries"]
     FAISS_INDEX_PATH = context["FAISS_INDEX_PATH"]
-    OPENAI_API_KEY = context["OPENAI_API_KEY"]
+    GROQ_API_KEY = context["GROQ_API_KEY"]
     OPENAI_BASE_URL = context["OPENAI_BASE_URL"]
     OPENAI_MODEL = context["OPENAI_MODEL"]
     retriever_cache = {"retriever": None}
@@ -34,6 +35,34 @@ def register_routes(app, context):
             )
 
         return retriever_cache["retriever"]
+
+    def extract_json(text):
+        if not text:
+            return None
+
+        code_block = re.search(
+            r"```(?:json)?\s*(\{.*?\})\s*```",
+            text,
+            re.DOTALL | re.IGNORECASE
+        )
+        candidates = []
+        if code_block:
+            candidates.append(code_block.group(1))
+
+        start = text.find("{")
+        end = text.rfind("}") + 1
+        if start != -1 and end > start:
+            candidates.append(text[start:end])
+
+        candidates.append(text)
+
+        for candidate in candidates:
+            try:
+                return json.loads(candidate)
+            except json.JSONDecodeError:
+                continue
+
+        return None
 
 
     @app.route("/find_users/<query_id>", methods=["GET"])
@@ -80,7 +109,7 @@ def register_routes(app, context):
     You are a legal AI assistant that finds similar legal queries. 
     Based on the context provided, return the 6 most similar queries to the user's query.
 
-    Return ONLY a valid JSON object with this exact structure:
+    Return ONLY a valid JSON object with this exact structure. Include Query1 through Query6 as full objects:
 
     {{
       "similar_queries": {{
@@ -92,11 +121,46 @@ def register_routes(app, context):
           "state_of_resolvation": "Yes/No",
           "how_it_got_resolved": "string"
         }},
-        "Query2": {{ ... }},
-        "Query3": {{ ... }},
-        "Query4": {{ ... }},
-        "Query5": {{ ... }},
-        "Query6": {{ ... }}
+        "Query2": {{
+          "OID": "string",
+          "name": "string",
+          "advocate": "string",
+          "Query": "string",
+          "state_of_resolvation": "Yes/No",
+          "how_it_got_resolved": "string"
+        }},
+        "Query3": {{
+          "OID": "string",
+          "name": "string",
+          "advocate": "string",
+          "Query": "string",
+          "state_of_resolvation": "Yes/No",
+          "how_it_got_resolved": "string"
+        }},
+        "Query4": {{
+          "OID": "string",
+          "name": "string",
+          "advocate": "string",
+          "Query": "string",
+          "state_of_resolvation": "Yes/No",
+          "how_it_got_resolved": "string"
+        }},
+        "Query5": {{
+          "OID": "string",
+          "name": "string",
+          "advocate": "string",
+          "Query": "string",
+          "state_of_resolvation": "Yes/No",
+          "how_it_got_resolved": "string"
+        }},
+        "Query6": {{
+          "OID": "string",
+          "name": "string",
+          "advocate": "string",
+          "Query": "string",
+          "state_of_resolvation": "Yes/No",
+          "how_it_got_resolved": "string"
+        }}
       }}
     }}
 
@@ -106,13 +170,13 @@ def register_routes(app, context):
 
     ⚠️ IMPORTANT: 
     - Return only the JSON object, no additional text, no explanations. 
-    - Replace `...` with actual data. 
     - Ensure valid JSON syntax.
+    - Do not include markdown code fences.
     """
 
             try:
                 client = OpenAI(
-                    api_key=OPENAI_API_KEY,
+                    api_key=GROQ_API_KEY,
                     base_url=OPENAI_BASE_URL
                 )
                 resp = client.chat.completions.create(
@@ -124,36 +188,71 @@ def register_routes(app, context):
                         }
                     ],
                     temperature=0.2,
-                    max_tokens=512
+                    max_tokens=2048
                 )
                 
                 response = resp.choices[0].message.content.strip()
 
-                start = response.find("{")
-                end = response.rfind("}") + 1
-                output = response[start:end]
+                data = extract_json(response)
+                if not data:
+                    print(f"JSON parsing failed. Raw response: {response}")
+                    retry_prompt = f"""
+Return ONLY compact valid JSON. No markdown. No explanations.
+Create exactly 6 similar legal query objects for this user query using the provided context.
+Every string must be short.
 
-                try:
-                    data = json.loads(output)
+Schema:
+{{
+  "similar_queries": {{
+    "Query1": {{"OID":"string","name":"string","advocate":"string","Query":"string","state_of_resolvation":"Yes/No","how_it_got_resolved":"string"}},
+    "Query2": {{"OID":"string","name":"string","advocate":"string","Query":"string","state_of_resolvation":"Yes/No","how_it_got_resolved":"string"}},
+    "Query3": {{"OID":"string","name":"string","advocate":"string","Query":"string","state_of_resolvation":"Yes/No","how_it_got_resolved":"string"}},
+    "Query4": {{"OID":"string","name":"string","advocate":"string","Query":"string","state_of_resolvation":"Yes/No","how_it_got_resolved":"string"}},
+    "Query5": {{"OID":"string","name":"string","advocate":"string","Query":"string","state_of_resolvation":"Yes/No","how_it_got_resolved":"string"}},
+    "Query6": {{"OID":"string","name":"string","advocate":"string","Query":"string","state_of_resolvation":"Yes/No","how_it_got_resolved":"string"}}
+  }}
+}}
+
+Context: {context}
+User query: {query_text}
+"""
+                    retry_resp = client.chat.completions.create(
+                        model=OPENAI_MODEL,
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": retry_prompt
+                            }
+                        ],
+                        temperature=0,
+                        max_tokens=2048
+                    )
+                    response = retry_resp.choices[0].message.content.strip()
+                    data = extract_json(response)
+
+                if data:
                     print(data)
-                except json.JSONDecodeError:
-                    print("JSON parsing failed")
+                else:
+                    print(f"JSON parsing failed after retry. Raw response: {response}")
                     data = {"query": query_text, "similar_queries": {}}
             except Exception as e:
                 print(f"LLM call failed: {str(e)}")
                 return jsonify({"error": "AI call failed"}), 500
 
             # Save to cache
-            try:
-                answers_col.insert_one({
-                    "query_id": query_id,
-                    "user_id": user_id,
-                    "result": data,
-                    "created_at": datetime.utcnow()
-                })
-                print(f"Saved result to cache for query_id: {query_id}")
-            except Exception as e:
-                print(f"Database save error: {str(e)}")
+            if data.get("similar_queries"):
+                try:
+                    answers_col.insert_one({
+                        "query_id": query_id,
+                        "user_id": user_id,
+                        "result": data,
+                        "created_at": datetime.utcnow()
+                    })
+                    print(f"Saved result to cache for query_id: {query_id}")
+                except Exception as e:
+                    print(f"Database save error: {str(e)}")
+            else:
+                print("Skipping cache save because no similar queries were parsed")
 
             #Render
             return render_template(

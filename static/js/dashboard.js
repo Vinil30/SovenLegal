@@ -197,12 +197,23 @@ function showNotification(message, type = "success") {
     }, 5000);
 }
 function scan_query(queryText) {
+    if (!queryText || !queryText.trim()) {
+        showNotification("Invalid query text", "error");
+        return;
+    }
+
     fetch("/analyse_query", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({query: queryText})
     })
-    .then(res => res.json())
+    .then(async res => {
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.error || `HTTP error ${res.status}`);
+        }
+        return data;
+    })
     .then(data => {
         if (data.result) {
             showNotification("Analysis complete!");
@@ -210,14 +221,22 @@ function scan_query(queryText) {
                 <p><strong>Status:</strong> ${data.result.status}</p>
                 <p><strong>Message:</strong> ${data.result.message}</p>
             `;
-            document.getElementById("analysisContent").innerHTML = content;
-            document.getElementById("analysisResults").style.display = "block";
+            const analysisContent = document.getElementById("analysisContent");
+            const analysisResults = document.getElementById("analysisResults");
+            const analysisPlaceholder = document.getElementById("analysisPlaceholder");
+
+            if (analysisContent) analysisContent.innerHTML = content;
+            if (analysisResults) {
+                analysisResults.style.display = "block";
+                analysisResults.classList.add("open");
+            }
+            if (analysisPlaceholder) analysisPlaceholder.style.display = "none";
             // setTimeout(() => location.reload(), 1500);
         } else {
-            showNotification("Analysis failed", "error");
+            showNotification(data.error || "Analysis failed", "error");
         }
     })
-    .catch(() => showNotification("Error analyzing query", "error"));
+    .catch(err => showNotification(err.message || "Error analyzing query", "error"));
 }
 
 async function generate_deadlines_ai(queryId) {
@@ -355,10 +374,18 @@ function renderGeneratedDeadlines(queryId) {
 }
 
 //  FIND USERS 
-function find_users(queryId) {
+function find_users(queryId, button) {
     if (!queryId) {
         showNotification("Invalid query ID", "error");
         return;
     }
+
+    if (button) {
+        button.disabled = true;
+        button.style.pointerEvents = "none";
+        button.style.opacity = "0.65";
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finding...';
+    }
+
     window.location.href = `/find_users/${queryId}`;
 }

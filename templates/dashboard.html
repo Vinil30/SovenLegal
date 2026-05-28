@@ -606,9 +606,9 @@ header {
               <div class="q-card-meta">{{ q.date }}</div>
               {% if q.scan_status %}
                 <span class="q-status-badge">{{ q.scan_status }}</span><br>
-                <button class="btn-find" onclick="find_users('{{ q.id }}')"><i class="fas fa-search"></i> Find Users</button>
+                <button class="btn-find" onclick="find_users('{{ q.id }}', this)"><i class="fas fa-search"></i> Find Users</button>
               {% else %}
-                <button class="btn-analyze" onclick="scan_query('{{ q.text }}')"><i class="fas fa-microscope"></i> Analyze</button>
+                <button class="btn-analyze" data-query="{{ q.text|e }}" onclick="scan_query(this.dataset.query)"><i class="fas fa-microscope"></i> Analyze</button>
               {% endif %}
             </div>
             {% else %}

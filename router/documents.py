@@ -48,6 +48,7 @@ def register_routes(app, context):
             "user_id": user_id,
             "name": data["name"],
             "base64_format": data["file"],
+            "mime_type": data.get("mime_type", "image/jpeg"),
             "api_status": "not scanned yet",
             "scan_status": "pending",
             "uploaded_at": datetime.utcnow()
@@ -69,6 +70,44 @@ def register_routes(app, context):
             return jsonify({"error": "No image found for this document"}), 400
 
         base64_data = doc["base64_format"]
+        mime_type = doc.get("mime_type")
+        if not mime_type:
+            if base64_data.startswith("/9j/"):
+                mime_type = "image/jpeg"
+            elif base64_data.startswith("iVBORw0KGgo"):
+                mime_type = "image/png"
+            elif base64_data.startswith("R0lGOD"):
+                mime_type = "image/gif"
+            elif base64_data.startswith("JVBER"):
+                mime_type = "application/pdf"
+            else:
+                mime_type = "image/jpeg"
+
+        if mime_type == "application/pdf":
+            try:
+                import base64
+                import fitz
+
+                pdf_bytes = base64.b64decode(base64_data)
+                pdf_doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+                if pdf_doc.page_count == 0:
+                    return jsonify({"error": "PDF has no pages to scan"}), 400
+
+                page = pdf_doc.load_page(0)
+                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+                base64_data = base64.b64encode(pix.tobytes("png")).decode("utf-8")
+                mime_type = "image/png"
+                pdf_doc.close()
+            except Exception as e:
+                return jsonify({
+                    "error": f"Could not convert PDF to image for scanning: {str(e)}"
+                }), 400
+
+        if not mime_type.startswith("image/"):
+            return jsonify({
+                "error": "Document scanning supports image files and PDFs only."
+            }), 400
+
         query = doc.get("query", "General legal validation")
         doc_type = doc.get("doc_type", doc.get("name", "unknown"))
         
@@ -94,10 +133,19 @@ def register_routes(app, context):
                 query=query,
                 doc_type=doc_type,
                 base64_data=base64_data,
+                mime_type=mime_type,
                 required_elements=required_elements,
                 visual_reference=visual_reference
             )
             result = analyzer.analyze_legal_doc()
+
+            if result.get("error"):
+                return jsonify({
+                    "error": result.get(
+                        "detailed_analysis",
+                        "Document scan failed"
+                    )
+                }), 500
 
             update_data = {
                 "api_status": "scanned",

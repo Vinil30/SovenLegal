@@ -386,7 +386,7 @@ header {
             <span id="fileName">Choose file…</span>
           </label>
           <input type="file" id="docFile" accept="image/*,application/pdf">
-          <button class="btn-primary-action" onclick="uploadDocument()">
+          <button class="btn-primary-action" id="uploadDocumentBtn" onclick="uploadDocument()">
             <i class="fas fa-upload"></i> Add Document
           </button>
         </div>
@@ -403,6 +403,7 @@ header {
         <div class="req-actions">
           <select id="docQuerySelect" class="req-select">
             {% if saved_queries %}
+              <option value="" selected>Select a query...</option>
               {% for q in saved_queries %}
                 <option value="{{ q.id }}">{{ q.text[:50] }}...</option>
               {% endfor %}
@@ -418,42 +419,7 @@ header {
       </div>
 
       <div id="required-docs-container">
-        {% if saved_queries and saved_queries[0].documents %}
-          {% for doc in saved_queries[0].documents %}
-          <div class="doc-req-card">
-            <div class="doc-req-header">
-              <div class="doc-req-icon"><i class="fas fa-file-alt"></i></div>
-              <span class="doc-req-name">{{ doc.name if doc.name else doc }}</span>
-            </div>
-            <div class="doc-req-body">
-              {% if doc.required_elements %}
-              <div>
-                <div class="req-elements-label">Required Elements</div>
-                <ul class="required-elements">
-                  {% for element in doc.required_elements %}
-                  <li>{{ element }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
-              {% endif %}
-              {% if doc.visual_reference %}
-              <div class="visual-reference">
-                <span class="visual-ref-label">Visual Reference</span>
-                <p class="visual-ref-desc">{{ doc.visual_reference.layout_description }}</p>
-                {% if doc.visual_reference.key_visual_features %}
-                <p class="visual-ref-features">Key features: {{ ', '.join(doc.visual_reference.key_visual_features) }}</p>
-                {% endif %}
-                <button class="btn-ref" onclick="handle_doc_reference()">
-                  <i class="fas fa-eye"></i> See Reference
-                </button>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        {% else %}
-          <p class="req-empty">No required documents yet. Run "Analyze" on a query or click "Get Required Documents".</p>
-        {% endif %}
+        <p class="req-empty">Select a query to view or generate required documents.</p>
       </div>
     </div>
 
@@ -474,7 +440,7 @@ header {
             </div>
             <div class="doc-info">
               <span class="doc-name">{{ doc.name }}</span>
-              <span class="doc-status-line">
+              <span class="doc-status-line doc-status">
                 Status: <strong>{{ doc.scan_status }}</strong>
               </span>
               {% if doc.scan_result and doc.scan_result.overall_validity %}
@@ -500,7 +466,7 @@ header {
               {% endif %}
             </div>
             <div class="doc-actions">
-              <button class="btn-scan" onclick="scanDocument('{{ doc.id }}')">
+              <button class="btn-scan" id="scan-btn-{{ doc.id }}" onclick="scanDocument('{{ doc.id }}')">
                 <i class="fas fa-search"></i>
                 {% if doc.scan_status == 'completed' %}Re-scan{% else %}Scan{% endif %}
               </button>

@@ -1,5 +1,6 @@
 let savedQueries = [];
 let currentUserId = null; // Will be set from template or API
+let referenceRequestInFlight = false;
 
 function showNotification(message, type = 'info') {
     let notification = document.getElementById('notification');
@@ -96,10 +97,12 @@ function uploadDocument() {
     }
 
     // Show loading state
-    const uploadBtn = document.querySelector('.upload-box button');
-    const originalText = uploadBtn.textContent;
-    uploadBtn.textContent = 'Uploading...';
-    uploadBtn.disabled = true;
+    const uploadBtn = document.getElementById('uploadDocumentBtn');
+    const originalText = uploadBtn ? uploadBtn.innerHTML : '';
+    if (uploadBtn) {
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        uploadBtn.disabled = true;
+    }
 
     let reader = new FileReader();
     reader.onload = function(e) {
@@ -111,6 +114,7 @@ function uploadDocument() {
             body: JSON.stringify({
                 name: name,
                 file: base64Data,
+                mime_type: file.type,
                 user_id: currentUserId || "{{ user.id }}" // Jinja fallback
             })
         })
@@ -121,6 +125,7 @@ function uploadDocument() {
                 // Clear form
                 document.getElementById("docName").value = '';
                 document.getElementById("docFile").value = '';
+                document.getElementById("fileName").textContent = 'Choose file…';
                 // Reload page to show new document
                 setTimeout(() => location.reload(), 1000);
             } else {
@@ -132,8 +137,10 @@ function uploadDocument() {
             showNotification("Error uploading document.", 'error');
         })
         .finally(() => {
-            uploadBtn.textContent = originalText;
-            uploadBtn.disabled = false;
+            if (uploadBtn) {
+                uploadBtn.innerHTML = originalText;
+                uploadBtn.disabled = false;
+            }
         });
     };
     reader.readAsDataURL(file);
@@ -141,17 +148,20 @@ function uploadDocument() {
 
 
 async function scanDocument(docId) {
+    const scanBtn = document.getElementById(`scan-btn-${docId}`);
+    const originalHtml = scanBtn ? scanBtn.innerHTML : '';
+
     try {
         // Show loading state
-        const scanBtn = document.querySelector(`#doc-${docId} .scan-btn`);
-        const originalText = scanBtn.textContent;
-        scanBtn.textContent = 'Scanning...';
-        scanBtn.disabled = true;
+        if (scanBtn) {
+            scanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning...';
+            scanBtn.disabled = true;
+        }
 
         const response = await fetch(`/document/scan/${docId}`, { method: "POST" });
         const data = await response.json();
 
-        if (data.error) {
+        if (!response.ok || data.error) {
             showNotification("Error: " + data.error, 'error');
             return;
         }
@@ -190,6 +200,9 @@ async function scanDocument(docId) {
         }
 
         showNotification("Scan completed successfully!", 'success');
+        if (scanBtn) {
+            scanBtn.innerHTML = '<i class="fas fa-search"></i> Re-scan';
+        }
         
         // Update user compliance score
         await updateUserComplianceDisplay();
@@ -199,11 +212,10 @@ async function scanDocument(docId) {
         showNotification("An error occurred while scanning", 'error');
     } finally {
         // Reset button state
-        const scanBtn = document.querySelector(`#doc-${docId} .scan-btn`);
         if (scanBtn) {
             scanBtn.disabled = false;
-            if (scanBtn.textContent === 'Scanning...') {
-                scanBtn.textContent = 'Scan';
+            if (scanBtn.innerHTML.includes('Scanning') && originalHtml) {
+                scanBtn.innerHTML = originalHtml;
             }
         }
     }
@@ -242,38 +254,54 @@ function renderDocsEnhanced(documents) {
     
     documents.forEach(doc => {
         const docDiv = document.createElement('div');
-        docDiv.className = 'doc-requirements';
-        
-        let html = `<h4>${doc.name || doc}</h4>`;
+        docDiv.className = 'doc-req-card';
+        const docName = typeof doc === 'object' ? (doc.name || 'Required Document') : doc;
+
+        let html = `
+            <div class="doc-req-header">
+                <div class="doc-req-icon"><i class="fas fa-file-alt"></i></div>
+                <span class="doc-req-name">${docName}</span>
+            </div>
+            <div class="doc-req-body">
+        `;
         
         if (typeof doc === 'object' && doc.required_elements) {
             html += `
-                <p><strong>Required Elements:</strong></p>
+                <div>
+                <div class="req-elements-label">Required Elements</div>
                 <ul class="required-elements">
                     ${doc.required_elements.map(element => `<li>${element}</li>`).join('')}
                 </ul>
+                </div>
             `;
         }
         
         if (typeof doc === 'object' && doc.visual_reference) {
-    html += `
-        <div class="visual-reference">
-            <strong>Visual Reference:</strong>
-            <p><em>${doc.visual_reference.layout_description || ''}</em></p>
-            ${doc.visual_reference.key_visual_features ? 
-                `<small>Key features: ${doc.visual_reference.key_visual_features.join(', ')}</small>` : ''
-            }
-            <button style="margin-top: 20px;" class="add-btn" onclick="handle_doc_reference('${doc.name}')">
-                See Reference
-            </button>
-        </div>
-    `;
-}
+            html += `
+                <div class="visual-reference">
+                    <span class="visual-ref-label">Visual Reference</span>
+                    <p class="visual-ref-desc">${doc.visual_reference.layout_description || ''}</p>
+                    ${doc.visual_reference.key_visual_features ? 
+                        `<p class="visual-ref-features">Key features: ${doc.visual_reference.key_visual_features.join(', ')}</p>` : ''
+                    }
+                    <button class="btn-ref" data-doc-name="${docName}" onclick="handle_doc_reference(this, this.dataset.docName)">
+                        <i class="fas fa-eye"></i> See Reference
+                    </button>
+                </div>
+            `;
+        }
 
-        
+        html += '</div>';
+
         docDiv.innerHTML = html;
         container.appendChild(docDiv);
     });
+}
+
+function renderRequiredDocsPlaceholder(message) {
+    const container = document.getElementById('required-docs-container');
+    if (!container) return;
+    container.innerHTML = `<p class="req-empty">${message}</p>`;
 }
 
 function handleGenerateDocs() {
@@ -455,11 +483,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (docSel) {
         docSel.addEventListener('change', e => {
             const queryId = e.target.value;
-            if (queryId) {
-                const query = savedQueries.find(q => q.id === queryId);
-                if (query && query.documents) {
-                    renderDocsEnhanced(query.documents);
-                }
+            if (!queryId) {
+                renderRequiredDocsPlaceholder('Select a query to view or generate required documents.');
+                return;
+            }
+
+            const query = savedQueries.find(q => q.id === queryId);
+            if (query && query.documents && query.documents.length) {
+                renderDocsEnhanced(query.documents);
+            } else {
+                renderRequiredDocsPlaceholder('No required documents generated for this query yet. Click "Get Required Documents".');
             }
         });
     }
@@ -473,8 +506,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-async function handle_doc_reference() {
+async function handle_doc_reference(button, requestedDocName) {
+    if (referenceRequestInFlight) {
+        showNotification("Reference generation is already in progress", "info");
+        return;
+    }
+
+    const refButtons = document.querySelectorAll('.btn-ref, .add-btn');
+    const originalButtonHtml = button ? button.innerHTML : '';
+
     try {
+        referenceRequestInFlight = true;
+        refButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.6';
+        });
+        if (button) {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        }
+
         // Example: grab currently selected query & document
         const select = document.getElementById("docQuerySelect");
         if (!select || !select.value) {
@@ -491,7 +542,7 @@ async function handle_doc_reference() {
         }
 
         // Pick the first document (or let user choose later)
-        const docName = query.documents[0].name || query.documents[0];
+        const docName = requestedDocName || query.documents[0].name || query.documents[0];
 
         // Call backend to generate HTML reference
         const res = await fetch("/generate_doc_reference", {
@@ -515,5 +566,15 @@ async function handle_doc_reference() {
     } catch (err) {
         console.error("Error generating reference:", err);
         showNotification("Error generating reference", "error");
+    } finally {
+        referenceRequestInFlight = false;
+        refButtons.forEach(btn => {
+            btn.disabled = false;
+            btn.style.pointerEvents = '';
+            btn.style.opacity = '';
+        });
+        if (button && originalButtonHtml) {
+            button.innerHTML = originalButtonHtml;
+        }
     }
 }

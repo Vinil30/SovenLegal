@@ -2,7 +2,7 @@ import os
 import ssl
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, url_for
 from flask_bcrypt import Bcrypt
 from pymongo import MongoClient
 
@@ -49,6 +49,28 @@ ROUTE_CONTEXT = {
 }
 
 register_routes(app, ROUTE_CONTEXT)
+
+@app.route("/favicon.ico")
+def favicon():
+    return app.send_static_file("favicon.svg")
+
+@app.after_request
+def add_favicon_links(response):
+    if response.content_type.startswith("text/html"):
+        html = response.get_data(as_text=True)
+        if "favicon.svg" not in html and "</head>" in html:
+            favicon_url = f'{url_for("static", filename="favicon.svg")}?v=2'
+            favicon_links = (
+                f'<link rel="icon" type="image/svg+xml" '
+                f'href="{favicon_url}">\n'
+                f'<link rel="shortcut icon" '
+                f'href="{favicon_url}">\n'
+            )
+            html = html.replace("</head>", f"{favicon_links}</head>", 1)
+            response.set_data(html)
+            response.headers["Content-Length"] = len(response.get_data())
+
+    return response
 
 if __name__ == "__main__":
     debug = os.getenv("FLASK_DEBUG", "false").lower() in {"1", "true", "yes"}

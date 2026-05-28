@@ -1,0 +1,199 @@
+from datetime import datetime
+
+from bson import ObjectId
+from flask import jsonify, redirect, render_template, request, session, url_for
+
+from utils.doc_scan import Image_Analyser
+from utils.generate_req_docs import Generate_Documents
+
+
+def register_routes(app, context):
+    users = context["users"]
+    documents = context["documents"]
+    queries = context["db"]["queries"]
+
+    @app.route("/documents")
+    def documents_list():
+        if "user" not in session:
+            return redirect(url_for("login"))
+
+        user_id = session["user"]
+        docs = list(documents.find({"user_id": user_id}))
+        for doc in docs:
+            doc["id"] = str(doc["_id"])
+            doc["scan_status"] = doc.get("scan_status", "pending")
+            doc["scan_result"] = doc.get("scan_result", "Not scanned yet")
+
+
+        user = users.find_one({"_id": ObjectId(user_id)})
+        return render_template("documents.html",
+            user={
+                "name": user.get("name", "User"),
+                "initials": user.get("name", "U")[0].upper()
+            },
+            uploaded_docs=docs,
+            saved_queries=list(queries.find({"user_id": user_id}))
+        )   
+
+
+    @app.route("/document/upload", methods=["POST"])
+    def upload_document():
+        data = request.get_json()
+        user_id = session.get("user")
+
+        if not user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        doc = {
+            "user_id": user_id,
+            "name": data["name"],
+            "base64_format": data["file"],
+            "api_status": "not scanned yet",
+            "scan_status": "pending",
+            "uploaded_at": datetime.utcnow()
+        }
+
+        result = documents.insert_one(doc)
+        return jsonify({
+        "status": "success",
+        "message": "Document uploaded",
+        "id": str(result.inserted_id)
+    })
+
+
+    @app.route("/document/scan/<doc_id>", methods=["POST"])
+    def scan_document(doc_id):
+        # Fetch document
+        doc = documents.find_one({"_id": ObjectId(doc_id)})
+        if not doc or "base64_format" not in doc:
+            return jsonify({"error": "No image found for this document"}), 400
+
+        base64_data = doc["base64_format"]
+        query = doc.get("query", "General legal validation")
+        doc_type = doc.get("doc_type", doc.get("name", "unknown"))
+        
+        user_id = doc.get("user_id")
+        required_elements = []
+        visual_reference = {}
+        
+        # Try to find the document requirements from user's queries
+        if user_id:
+            user_queries = queries.find({"user_id": user_id, "documents": {"$exists": True}})
+            for user_query in user_queries:
+                if "documents" in user_query:
+                    for doc_info in user_query["documents"]:
+                        if isinstance(doc_info, dict) and doc_info.get("name", "").lower() in doc_type.lower():
+                            required_elements = doc_info.get("required_elements", [])
+                            visual_reference = doc_info.get("visual_reference", {})
+                            break
+                    if required_elements:  # Found matching document requirements
+                        break
+
+        try:
+            analyzer = Image_Analyser(
+                query=query,
+                doc_type=doc_type,
+                base64_data=base64_data,
+                required_elements=required_elements,
+                visual_reference=visual_reference
+            )
+            result = analyzer.analyze_legal_doc()
+
+            update_data = {
+                "api_status": "scanned",
+                "scan_status": "completed",
+                "scan_result": result,
+                "scanned_at": datetime.utcnow()
+            }
+            
+            if result.get("overall_validity") == "valid":
+                update_data["scan_summary"] = f"Document is valid. All required elements present."
+            elif result.get("overall_validity") == "invalid":
+                missing = result.get("required_elements_check", {}).get("missing_elements", [])
+                update_data["scan_summary"] = f"Document is invalid. Missing: {', '.join(missing)}"
+            else:
+                update_data["scan_summary"] = result.get("detailed_analysis", "Analysis completed with issues.")
+
+            documents.update_one(
+                {"_id": ObjectId(doc_id)},
+                {"$set": update_data}
+            )
+
+            return jsonify({
+                "message": "Document scanned successfully!",
+                "result": result,
+                "summary": update_data["scan_summary"]
+            })
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    @app.route("/user/<user_id>/document_status", methods=["GET"])
+    def get_user_document_status(user_id):
+        """
+        Get comprehensive document status for a user including compliance
+        """
+        try:
+            user_docs = documents.find({"user_id": user_id})
+            doc_status = []
+            
+            for doc in user_docs:
+                doc_info = {
+                    "id": str(doc["_id"]),
+                    "name": doc.get("name", "Unknown"),
+                    "uploaded_at": doc.get("uploaded_at"),
+                    "scan_status": doc.get("scan_status", "pending"),
+                    "overall_validity": "unknown"
+                }
+                
+                if "scan_result" in doc and isinstance(doc["scan_result"], dict):
+                    scan_result = doc["scan_result"]
+                    doc_info.update({
+                        "overall_validity": scan_result.get("overall_validity", "unknown"),
+                        "authenticity_score": scan_result.get("authenticity_score", 0),
+                        "required_elements_status": scan_result.get("required_elements_check", {}),
+                        "quality_issues": scan_result.get("quality_assessment", {})
+                    })
+                
+                doc_status.append(doc_info)
+            
+            return jsonify({
+                "status": "success",
+                "documents": doc_status
+            })
+            
+        except Exception as e:
+            return jsonify({"status": "error", "message": str(e)}), 500
+
+    @app.route("/document/requirements/<doc_name>", methods=["GET"])
+    def get_document_requirements(doc_name):
+        """
+        New endpoint to get document requirements and visual reference
+        """
+        try:
+            temp_query = f"What are the requirements for {doc_name}?"
+            generator = Generate_Documents(temp_query)
+            doc_info = generator.call_api()
+            
+            for doc in doc_info.get("documents", []):
+                if isinstance(doc, dict) and doc_name.lower() in doc.get("name", "").lower():
+                    return jsonify({
+                        "status": "success",
+                        "document": doc
+                    })
+            
+            return jsonify({
+                "status": "error", 
+                "message": "Document requirements not found"
+            }), 404
+            
+        except Exception as e:
+            return jsonify({"status": "error", "message": str(e)}), 500
+        
+
+        
+
+
+    @app.route("/document/delete/<doc_id>", methods=["DELETE"])
+    def delete_document(doc_id):
+        documents.delete_one({"_id": ObjectId(doc_id)})
+        return jsonify({"message": "Document deleted successfully!"})

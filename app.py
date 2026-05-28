@@ -59,7 +59,7 @@ def add_favicon_links(response):
     if response.content_type.startswith("text/html"):
         html = response.get_data(as_text=True)
         if "favicon.svg" not in html and "</head>" in html:
-            favicon_url = f'{url_for("static", filename="favicon.svg")}?v=2'
+            favicon_url = f'{url_for("static", filename="favicon.svg")}?v=14'
             favicon_links = (
                 f'<link rel="icon" type="image/svg+xml" '
                 f'href="{favicon_url}">\n'
